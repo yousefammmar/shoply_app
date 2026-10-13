@@ -16,21 +16,13 @@ class LoginUsecase {
       );
 
       final user = snapshot.user;
+      final snapshotUser = await _getUserinfo(uid: user!.uid);
 
-      if (!user!.emailVerified) {
-        return Left('Please verifiy email and then login');
-      } else {
-        final snapshotUser = await _getUserinfo(uid: user.uid);
-
-        return snapshotUser.fold(
-          (errrorMessage) {
-            return Left(errrorMessage);
-          },
-          (responseLogin) {
-            return Right(responseLogin);
-          },
-        );
-      }
+      final Either<String, ResponseLogin> result = snapshotUser.fold(
+        (errorMessage) => Left(errorMessage),
+        (responseLogin) => Right(responseLogin),
+      );
+      return result;
     } on FirebaseAuthException catch (e) {
       final error = ErrorHandleHelper.getCustomErrorMessage(e.code);
       return Left(error);
@@ -46,7 +38,17 @@ class LoginUsecase {
           .doc(uid)
           .get();
 
-      final responseLogin = ResponseLogin.fromJson(snapshot.data() ?? {});
+      final data = snapshot.data();
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      final responseLogin = ResponseLogin(
+        uid: uid,
+        email: data?['email'] ?? currentUser?.email ?? '',
+        address: data?['address'] ?? '',
+        fullName: data?['fullName'] ?? currentUser?.displayName ?? '',
+        userName: data?['userName'] ?? '',
+        profileImage: data?['profileImage'],
+      );
 
       return Right(responseLogin);
     } on FirebaseException catch (e) {
