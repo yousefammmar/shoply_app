@@ -15,7 +15,7 @@ class SplashCubit extends Cubit<SplashState> {
         if (isLogin ?? false) {
           final responseLogin = await LocalStorageUser.instance.getUserData();
           LocalStorageUser.instance.setUserinfo(responseLogin: responseLogin);
-          emit(SplashHomePageState());
+          emit(SplashMainPageState());
         } else {
           emit(SplashLoginPageState());
         }

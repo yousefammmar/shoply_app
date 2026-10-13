@@ -7,16 +7,22 @@ class CustomCachedImageNetwork extends StatelessWidget {
     super.key,
     required this.image,
     this.errorWidget,
+    this.height,
+    this.width,
+    this.fit,
   });
   final String image;
   final Widget? errorWidget;
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      height: 120,
-      width: 150,
+      height: height ?? 120,
+      width: width ?? 150,
       imageUrl: image,
-      fit: BoxFit.cover,
+      fit: fit ?? BoxFit.cover,
       placeholder: (context, url) => Center(
         child: CircularProgressIndicator(color: AppColors.primaryColor),
       ),

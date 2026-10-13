@@ -40,7 +40,7 @@ class LoginScreen extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                AppPages.homeScreen,
+                AppPages.mainScreen,
                 (route) => false,
               );
             }
