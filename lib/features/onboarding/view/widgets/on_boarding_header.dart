@@ -1,3 +1,4 @@
+
 part of '../on_boarding_screen.dart';
 
 class _OnBoardingHeader extends StatelessWidget {
@@ -13,34 +14,78 @@ class _OnBoardingHeader extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<OnBoardingCubit>();
+
           return PageView.builder(
+            controller: cubit.pageController,
+            itemCount: 3,
             onPageChanged: (index) {
               cubit.changeIndex(index: index);
             },
-            controller: cubit.pageController,
-            itemCount: 3,
             itemBuilder: (context, index) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image(
-                      image: AssetImage(cubit.onBoardImage[index]),
+                    Image.network(
+                      cubit.onBoardImage[index],
                       height: 400,
                       width: double.infinity,
+                      fit: BoxFit.contain,
+
+                      // Loading indicator
+                      loadingBuilder: (
+                        context,
+                        child,
+                        loadingProgress,
+                      ) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+
+                        return const SizedBox(
+                          height: 400,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
+
+                      // Error handling
+                      errorBuilder: (
+                        context,
+                        error,
+                        stackTrace,
+                      ) {
+                        debugPrint('Image loading error: $error');
+
+                        return const SizedBox(
+                          height: 400,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    SizedBox(height: 10),
+
+                    const SizedBox(height: 10),
+
                     Text(
                       cubit.onBoardTitle[index],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 10),
+
+                    const SizedBox(height: 10),
+
                     Text(
                       cubit.onBoardDescreption[index],
                       style: TextStyle(
