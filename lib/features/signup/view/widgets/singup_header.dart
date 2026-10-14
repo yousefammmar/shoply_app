@@ -31,7 +31,7 @@ class _SingupHeader extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   backgroundImage:
                       cubit.image == null || (cubit.image?.path.isEmpty ?? true)
-                      ? AssetImage(AppImages.profilePicture)
+                      ? NetworkImage(AppImages.profilePicture)
                       : FileImage(cubit.image!),
                 ),
                 Positioned(

@@ -1,7 +1,5 @@
 
 class AppImages {
-  static const String _pathImage = 'assets/images';
-
   static const String _baseUrl =
       'https://wadafytqtditmiltzrar.supabase.co/storage/v1/object/public/images';
 

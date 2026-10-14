@@ -21,7 +21,7 @@ class SignupUsecase {
           );
       await _sendEmailVerification(userCredential: snapshot);
       final imageUrl = await _uploadImage(image: image);
-      await _saveUserDate(
+      return await _saveUserDate(
         requestSignup: RequestSignup(
           email: requestSignup.email,
           fullName: requestSignup.fullName,
@@ -31,7 +31,6 @@ class SignupUsecase {
           profileImage: imageUrl,
         ),
       );
-      return Right(true);
     } on FirebaseAuthException catch (e) {
       return Left(e.message ?? '');
     }
@@ -55,7 +54,7 @@ class SignupUsecase {
         androidPackageName: 'com.example.shoply_app',
         handleCodeInApp: true,
         url:
-            'https://shoply-f637c.firebaseapp.com/__/auth/action?email=${userCredential.user?.email}',
+            'https://shoply-e25f0.firebaseapp.com/__/auth/action?email=${userCredential.user?.email}',
       );
       await userCredential.user?.sendEmailVerification(actionCodeSettings);
       return Right(true);
