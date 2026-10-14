@@ -50,18 +50,18 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD9I05AYYs-nh8KLV49lAlunrbU_wxzcWM',
-    appId: '1:568053902217:android:ec0a726180d496b3d9cf58',
-    messagingSenderId: '568053902217',
-    projectId: 'shoply-f637c',
-    storageBucket: 'shoply-f637c.firebasestorage.app',
+    apiKey: 'AIzaSyBHORQs1vIl0kMcuTYMqYIbBAl_dr1BS_g',
+    appId: '1:278762559659:android:63e86dd9724ab3225a7fee',
+    messagingSenderId: '278762559659',
+    projectId: 'shoply-e25f0',
+    storageBucket: 'shoply-e25f0.firebasestorage.app',
   );
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBFp_pNogqo4r62RQHmFyzVhdIu6-7NbnM',
-    appId: '1:568053902217:ios:eb888362ea98f181d9cf58',
-    messagingSenderId: '568053902217',
-    projectId: 'shoply-f637c',
-    storageBucket: 'shoply-f637c.firebasestorage.app',
+    apiKey: 'AIzaSyDltqtSZTVfgwIIS_EFGnZABjtAlnv4lz8',
+    appId: '1:278762559659:ios:193e22500308fe875a7fee',
+    messagingSenderId: '278762559659',
+    projectId: 'shoply-e25f0',
+    storageBucket: 'shoply-e25f0.firebasestorage.app',
     iosBundleId: 'com.example.shoplyApp',
   );
 }
