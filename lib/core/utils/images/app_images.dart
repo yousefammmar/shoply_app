@@ -26,8 +26,11 @@ class AppImages {
 
   // ================= CATEGORIES =================
 
-  static const String categoryAccessories =
-      '$_baseUrl/category_accessories.png';
+  static const String categoryPerfume =
+      '$_baseUrl/perfume_category.png';
+
+  static const String categorySunglasses =
+      '$_baseUrl/sunglasses_catigory.png';
 
   static const String categoryBags =
       '$_baseUrl/category_bags.png';

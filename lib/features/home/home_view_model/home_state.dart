@@ -20,3 +20,8 @@ class HomeError extends HomeState {
 
   HomeError(this.message);
 }
+class HomeTabChanged extends HomeState {
+  final int index;
+
+  HomeTabChanged(this.index);
+}

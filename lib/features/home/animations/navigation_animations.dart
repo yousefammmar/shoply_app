@@ -1,52 +1,26 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
-class NavigationAnimations {
-  static Route<T> slideRoute<T>(Widget page) {
-    return PageRouteBuilder<T>(
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return page;
-      },
-      transitionsBuilder: (
-        context,
-        animation,
-        secondaryAnimation,
-        child,
-      ) {
-        final slideAnimation = Tween<Offset>(
-          begin: const Offset(1, 0),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeInOutCubic,
-          ),
+
+class BottomNavAnimations {
+  static Widget animateIcon(
+    Widget child, {
+    required bool isSelected,
+  }) {
+    return child
+        .animate(
+          key: ValueKey(isSelected),
+        )
+        .scale(
+          begin: isSelected
+              ? const Offset(0.8, 0.8)
+              : const Offset(1, 1),
+          end: const Offset(1, 1),
+          duration: 350.ms,
+          curve: Curves.easeOutBack,
+        )
+        .fadeIn(
+          duration: 250.ms,
         );
-        return SlideTransition(
-          position: slideAnimation,
-          child: child,
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 350),
-    );
-  }
-  static Route<T> fadeRoute<T>(Widget page) {
-    return PageRouteBuilder<T>(
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return page;
-      },
-      transitionsBuilder: (
-        context,
-        animation,
-        secondaryAnimation,
-        child,
-      ) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 300),
-    );
   }
 }
