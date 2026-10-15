@@ -11,9 +11,9 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
   int index = 0;
 
   final onBoardImage = [
-    AppImages.onboardImage1,
-    AppImages.onboardImage2,
-    AppImages.onboardImage3,
+    AppImages.onboarding1,
+    AppImages.onboarding2,
+    AppImages.onboarding3,
   ];
 
   final onBoardTitle = [

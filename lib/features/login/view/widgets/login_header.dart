@@ -8,7 +8,7 @@ class _LoginHeader extends StatelessWidget {
     return Column(
       children: [
         Image(
-          image: NetworkImage(AppImages.shoplySplashImage),
+          image: NetworkImage(AppImages.splash),
           height: 200,
           width: 240,
           fit: BoxFit.cover,

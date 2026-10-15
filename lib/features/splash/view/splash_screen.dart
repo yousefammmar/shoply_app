@@ -37,7 +37,7 @@ class SplashScreen extends StatelessWidget {
           },
           child: Center(
             child: Image(
-              image: NetworkImage(AppImages.shoplySplashImage),
+              image: NetworkImage(AppImages.splash),
               height: 350,
               width: 350,
             ),

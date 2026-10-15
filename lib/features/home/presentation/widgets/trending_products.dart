@@ -14,7 +14,7 @@ class TrendingProducts extends StatelessWidget {
     final products = [
       (
         name: 'Sport Sneakers',
-        image: AppImages.shoe1,
+        image: AppImages.shoes1,
         price: 120.0,
       ),
       (
@@ -24,12 +24,12 @@ class TrendingProducts extends StatelessWidget {
       ),
       (
         name: 'Casual Top',
-        image: AppImages.top1,
+        image: AppImages.shirt1,
         price: 45.0,
       ),
       (
         name: 'Sunglasses',
-        image: AppImages.sunglasses1,
+        image: AppImages.glasses1,
         price: 60.0,
       ),
     ];
