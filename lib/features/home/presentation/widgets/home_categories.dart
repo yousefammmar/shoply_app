@@ -51,6 +51,12 @@ class HomeCategories extends StatelessWidget {
                         width: 130,
                         height: 130,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                        debugPrint('IMAGE ERROR: $imageUrl');
+                        debugPrint('DETAILS: $error');
+
+                        return const Icon(Icons.broken_image);
+                      },
                       ),
                     ),
                     const SizedBox(height: 8),
