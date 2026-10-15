@@ -152,9 +152,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-git add .
-
-git commit -m "feat(home): build home screen with Cubit, product sections, and animations" \
--m "Add banner, categories, and trending product cards with Supabase images. Integrate HomeCubit for state management, animated bottom navigation, and reusable fade, slide, scale, and staggered animations. Improve UI layout and product grid spacing."
-
-git push origin main
