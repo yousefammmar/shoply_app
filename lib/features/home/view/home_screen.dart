@@ -15,7 +15,6 @@ import 'package:shoply_app/features/home/home_view_model/home_cubit.dart';
 import 'package:shoply_app/features/home/presentation/widgets/home_banner.dart';
 import 'package:shoply_app/features/home/presentation/widgets/home_categories.dart';
 import 'package:shoply_app/features/home/presentation/widgets/trending_products.dart';
-import 'package:shoply_app/features/home/presentation/widgets/home_bottom_nav_bar.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   // ================= LOGOUT =================
@@ -100,18 +99,7 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       // ================= BOTTOM NAVIGATION =================
-      bottomNavigationBar: BlocBuilder<HomeCubit, HomeState>(
-        buildWhen: (previous, current) {
-          return current is HomeTabChanged;
-        },
-        builder: (context, state) {
-          final cubit = context.read<HomeCubit>();
-          return HomeBottomNavBar(
-            selectedIndex: cubit.selectedTabIndex,
-            onTabChange: cubit.changeTab,
-          );
-        },
-      ),
+      
     );
   }
 }
