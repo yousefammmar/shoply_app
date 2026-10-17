@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:shoply_app/core/utils/images/app_images.dart';
 import 'package:shoply_app/features/products/view/category_products_screen.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shoply_app/features/favorites/view_model/favorites_cubit.dart';
+
 class HomeCategories extends StatelessWidget {
   const HomeCategories({super.key});
 
@@ -67,12 +70,17 @@ class HomeCategories extends StatelessWidget {
               return InkWell(
                 borderRadius: BorderRadius.circular(20),
                 onTap: () {
+                  final favoritesCubit = context.read<FavoritesCubit>();
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CategoryProductsScreen(
-                        categoryId: category.id,
-                        categoryName: category.name,
+                      builder: (_) => BlocProvider.value(
+                        value: favoritesCubit,
+                        child: CategoryProductsScreen(
+                          categoryId: category.id,
+                          categoryName: category.name,
+                        ),
                       ),
                     ),
                   );
