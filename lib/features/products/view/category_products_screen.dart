@@ -1,12 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
 import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
-
+import 'package:flutter_animate/flutter_animate.dart';
 class CategoryProductsScreen extends StatelessWidget {
   final String categoryId;
   final String categoryName;
@@ -74,19 +73,36 @@ class CategoryProductsScreen extends StatelessWidget {
                   mainAxisExtent: 245,
                 ),
                 itemBuilder: (context, index) {
+                  final product = products[index];
+
                   return ProductCard(
-                    product: products[index],
+                    key: ValueKey(product.id),
+                    product: product,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => ProductDetailsScreen(
-                            product: products[index],
+                            product: product,
                           ),
                         ),
                       );
                     },
-                  );
+                  )
+                      .animate()
+                      .fadeIn(
+                        duration: 420.ms,
+                        delay: Duration(
+                          milliseconds: (index % 8) * 55,
+                        ),
+                        curve: Curves.easeOutCubic,
+                      )
+                      .slideY(
+                        begin: 0.12,
+                        end: 0,
+                        duration: 500.ms,
+                        curve: Curves.easeOutCubic,
+                      );
                 },
               );
             }
