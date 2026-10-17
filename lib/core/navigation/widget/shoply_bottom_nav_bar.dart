@@ -5,11 +5,11 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:shoply_app/features/home/animations/navigation_animations.dart';
 
-class HomeBottomNavBar extends StatelessWidget {
+class ShoplyBottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTabChange;
 
-  const HomeBottomNavBar({
+  const ShoplyBottomNavBar({
     super.key,
     required this.selectedIndex,
     required this.onTabChange,

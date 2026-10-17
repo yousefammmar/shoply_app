@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppDrawer extends StatelessWidget {
   final VoidCallback onLogout;
@@ -24,6 +26,8 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     final items = [
       _DrawerItem('My Profile', Icons.person_outline, onProfile),
       _DrawerItem('My Orders', Icons.inventory_2_outlined, onOrders),
@@ -37,55 +41,125 @@ class AppDrawer extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            // ================= HEADER =================
+            // ================= USER HEADER =================
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              color: primaryColor,
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      color: primaryColor,
-                      size: 32,
-                    ),
-                  ),
+            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: user == null
+                  ? null
+                  : FirebaseFirestore.instance
+                      .collection('User')
+                      .doc(user.uid)
+                      .snapshots(),
+              builder: (context, snapshot) {
+                final data = snapshot.data?.data();
 
-                  const SizedBox(width: 12),
+                final fullName =
+                    (data?['fullName'] as String?)?.trim() ?? '';
 
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome to Shoply',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                final userName =
+                    (data?['userName'] as String?)?.trim() ?? '';
+
+                final email =
+                    (data?['email'] as String?)?.trim() ??
+                    user?.email ??
+                    '';
+
+                final profileImage =
+                    (data?['profileImage'] as String?)?.trim() ?? '';
+
+                final displayName = fullName.isNotEmpty
+                    ? fullName
+                    : (user?.displayName?.isNotEmpty ?? false)
+                        ? user!.displayName!
+                        : 'Shoply User';
+
+                final imageUri = Uri.tryParse(profileImage);
+
+                final hasValidImage =
+                    imageUri != null &&
+                    imageUri.hasAuthority &&
+                    (imageUri.scheme == 'https' ||
+                        imageUri.scheme == 'http');
+
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  color: primaryColor,
+                  child: Row(
+                    children: [
+                      // Profile Image
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: hasValidImage
+                              ? Image.network(
+                                  profileImage,
+                                  width: 56,
+                                  height: 56,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (
+                                    context,
+                                    error,
+                                    stackTrace,
+                                  ) {
+                                    return const Icon(
+                                      Icons.person,
+                                      color: primaryColor,
+                                      size: 32,
+                                    );
+                                  },
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  color: primaryColor,
+                                  size: 32,
+                                ),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Your shopping account',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      // User Information
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              displayName,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            const SizedBox(height: 4),
+
+                            Text(
+                              userName.isNotEmpty
+                                  ? '@$userName'
+                                  : email,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-                .animate()
-                .fadeIn(duration: 400.ms)
-                .slideX(begin: -0.15, end: 0),
+                )
+                    .animate()
+                    .fadeIn(duration: 400.ms)
+                    .slideX(begin: -0.15, end: 0);
+              },
+            ),
 
             const SizedBox(height: 16),
 
@@ -125,7 +199,9 @@ class AppDrawer extends StatelessWidget {
                   )
                       .animate()
                       .fadeIn(
-                        delay: Duration(milliseconds: index * 70),
+                        delay: Duration(
+                          milliseconds: index * 70,
+                        ),
                         duration: 350.ms,
                       )
                       .slideX(
@@ -171,6 +247,8 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
+
+// ================= DRAWER ITEM MODEL =================
 
 class _DrawerItem {
   final String title;

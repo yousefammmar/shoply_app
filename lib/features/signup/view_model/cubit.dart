@@ -22,7 +22,8 @@ class SignupCubit extends Cubit<SignupState> {
 
   void pickImage() async {
     final imageFile = await ImagePickerHelper.pickImageGallery();
-    image = File(imageFile?.path ?? '');
+    if (imageFile == null) return;
+    image = File(imageFile.path);
     emit(SingupPickImageState());
   }
 

@@ -1,15 +1,39 @@
+
 import 'package:flutter/material.dart';
+
 import 'package:shoply_app/core/utils/images/app_images.dart';
+import 'package:shoply_app/features/products/view/category_products_screen.dart';
 
 class HomeCategories extends StatelessWidget {
   const HomeCategories({super.key});
 
+  // categoryId must match Firestore categoryId
   static const categories = [
-    ('Tops', AppImages.categoryClothes),
-    ('Bags', AppImages.categoryBags),
-    ('Shoes', AppImages.categoryShoes),
-    ('Sunglasses', AppImages.categoryGlasses),
-    ('Perfumes', AppImages.categoryPerfumes),
+    (
+      id: 'clothes',
+      name: 'Tops',
+      image: AppImages.categoryClothes,
+    ),
+    (
+      id: 'bags',
+      name: 'Bags',
+      image: AppImages.categoryBags,
+    ),
+    (
+      id: 'shoes',
+      name: 'Shoes',
+      image: AppImages.categoryShoes,
+    ),
+    (
+      id: 'glasses',
+      name: 'Sunglasses',
+      image: AppImages.categoryGlasses,
+    ),
+    (
+      id: 'perfumes',
+      name: 'Perfumes',
+      image: AppImages.categoryPerfumes,
+    ),
   ];
 
   @override
@@ -35,40 +59,60 @@ class HomeCategories extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: categories.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 const SizedBox(width: 14),
             itemBuilder: (context, index) {
-              final (name, imageUrl) = categories[index];
+              final category = categories[index];
 
-              return SizedBox(
-                width: 130,
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                        imageUrl,
-                        width: 130,
-                        height: 130,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                        debugPrint('IMAGE ERROR: $imageUrl');
-                        debugPrint('DETAILS: $error');
-
-                        return const Icon(Icons.broken_image);
-                      },
+              return InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CategoryProductsScreen(
+                        categoryId: category.id,
+                        categoryName: category.name,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
+                  );
+                },
+                child: SizedBox(
+                  width: 130,
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          category.image,
+                          width: 130,
+                          height: 130,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            debugPrint(
+                              'IMAGE ERROR: ${category.image}',
+                            );
+                            debugPrint('DETAILS: $error');
+
+                            return const SizedBox(
+                              width: 130,
+                              height: 130,
+                              child: Icon(Icons.broken_image),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        category.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
