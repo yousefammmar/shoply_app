@@ -3,36 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// Core - Navigation
+// Core
 import 'package:shoply_app/core/navigation/cubit/main_cubit.dart';
 import 'package:shoply_app/core/navigation/cubit/main_state.dart';
 import 'package:shoply_app/core/navigation/widget/shoply_bottom_nav_bar.dart';
-
-// Core - Local Storage & Routes
 import 'package:shoply_app/core/local/local_storage.dart';
 import 'package:shoply_app/core/local/local_storage_user.dart';
 import 'package:shoply_app/core/routes/app_pages.dart';
-
-// Core - Shared Widgets
 import 'package:shoply_app/core/utils/widgets/drawer/app_drawer.dart';
-
-// Core - Repository
 import 'package:shoply_app/core/repositories/category_repository.dart';
 
-// Features - Home
+// Home
 import 'package:shoply_app/features/home/view/home_screen.dart';
 import 'package:shoply_app/features/home/home_view_model/home_cubit.dart';
 
-// Features - Categories
+// Categories
 import 'package:shoply_app/features/categories/view/categories_screen.dart';
 import 'package:shoply_app/features/categories/view_model/categories_cubit.dart';
 
-// Features - Products
+// Products
 import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
-// Features - Favorites
+
+// Favorites
 import 'package:shoply_app/features/favorites/repo/favorites_repo.dart';
 import 'package:shoply_app/features/favorites/view_model/favorites_cubit.dart';
+import 'package:shoply_app/features/favorites/view/favorites_screen.dart';
+
+// Cart
+import 'package:shoply_app/features/cart/view/cart_screen.dart';
+
+// Orders
+import 'package:shoply_app/features/orders/view/order_history_screen.dart';
+
+// Profile, Settings, About
+import 'package:shoply_app/features/profile/view/profile_screen.dart';
+import 'package:shoply_app/features/settings/view/settings_screen.dart';
+import 'package:shoply_app/features/about/view/about_screen.dart';
+
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
@@ -55,12 +63,12 @@ class MainScreen extends StatelessWidget {
         AppPages.loginScreen,
         (route) => false,
       );
-    } catch (e) {
+    } catch (error) {
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Logout failed: $e'),
+          content: Text('Logout failed: $error'),
         ),
       );
     }
@@ -77,6 +85,15 @@ class MainScreen extends StatelessWidget {
       child: BlocBuilder<MainCubit, MainState>(
         builder: (context, state) {
           final mainCubit = context.read<MainCubit>();
+
+          void openPage(Widget page) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => page,
+              ),
+            );
+          }
 
           return Scaffold(
             backgroundColor: Colors.white,
@@ -116,18 +133,38 @@ class MainScreen extends StatelessWidget {
               ),
             ),
 
-            // ================= SIDEBAR =================
+            // ================= SIDE BAR =================
 
             drawer: AppDrawer(
               onLogout: () => _logout(context),
+
+              onProfile: () {
+                openPage(const ProfileScreen());
+              },
+
+              onOrders: () {
+                openPage(const OrderHistoryScreen());
+              },
+
+              onFavorites: () {
+                mainCubit.changeTab(2);
+              },
+
+              onSettings: () {
+                openPage(const SettingsScreen());
+              },
+
+              onAbout: () {
+                openPage(const AboutScreen());
+              },
             ),
 
-            // ================= PAGES =================
+            // ================= MAIN PAGES =================
 
             body: IndexedStack(
               index: mainCubit.selectedIndex,
               children: [
-                // Home + Products Cubits
+                // HOME
                 MultiBlocProvider(
                   providers: [
                     BlocProvider<HomeCubit>(
@@ -142,7 +179,7 @@ class MainScreen extends StatelessWidget {
                   child: const HomeScreen(),
                 ),
 
-                // Categories
+                // CATEGORIES
                 BlocProvider<CategoriesCubit>(
                   create: (_) => CategoriesCubit(
                     CategoryRepository(),
@@ -150,21 +187,11 @@ class MainScreen extends StatelessWidget {
                   child: const CategoriesScreen(),
                 ),
 
-                // Favorites (temporary)
-                const Center(
-                  child: Text(
-                    'Favorites - Coming Soon',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
+                // FAVORITES
+                const FavoritesScreen(),
 
-                // Cart (temporary)
-                const Center(
-                  child: Text(
-                    'Cart - Coming Soon',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
+                // CART
+                const CartScreen(),
               ],
             ),
 
@@ -176,7 +203,7 @@ class MainScreen extends StatelessWidget {
             ),
           );
         },
-      )
+      ),
     );
   }
 }

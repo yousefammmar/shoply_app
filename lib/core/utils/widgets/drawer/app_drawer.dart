@@ -10,7 +10,7 @@ class AppDrawer extends StatelessWidget {
   final VoidCallback? onOrders;
   final VoidCallback? onFavorites;
   final VoidCallback? onSettings;
-  final VoidCallback? onSupport;
+  final VoidCallback? onAbout;
 
   const AppDrawer({
     super.key,
@@ -19,7 +19,7 @@ class AppDrawer extends StatelessWidget {
     this.onOrders,
     this.onFavorites,
     this.onSettings,
-    this.onSupport,
+    this.onAbout,
   });
 
   static const Color primaryColor = Color(0xFF07583F);
@@ -29,11 +29,31 @@ class AppDrawer extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     final items = [
-      _DrawerItem('My Profile', Icons.person_outline, onProfile),
-      _DrawerItem('My Orders', Icons.inventory_2_outlined, onOrders),
-      _DrawerItem('Favorites', Icons.favorite_border, onFavorites),
-      _DrawerItem('Settings', Icons.settings_outlined, onSettings),
-      _DrawerItem('Help & Support', Icons.help_outline, onSupport),
+      _DrawerItem(
+        'My Profile',
+        Icons.person_outline,
+        onProfile,
+      ),
+      _DrawerItem(
+        'My Orders',
+        Icons.inventory_2_outlined,
+        onOrders,
+      ),
+      _DrawerItem(
+        'Favorites',
+        Icons.favorite_border,
+        onFavorites,
+      ),
+      _DrawerItem(
+        'Settings',
+        Icons.settings_outlined,
+        onSettings,
+      ),
+      _DrawerItem(
+        'About Shoply',
+        Icons.info_outline,
+        onAbout,
+      ),
     ];
 
     return Drawer(
@@ -41,9 +61,9 @@ class AppDrawer extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            // ================= USER HEADER =================
-
-            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            // ================= HEADER =================
+            StreamBuilder<
+                DocumentSnapshot<Map<String, dynamic>>>(
               stream: user == null
                   ? null
                   : FirebaseFirestore.instance
@@ -53,33 +73,16 @@ class AppDrawer extends StatelessWidget {
               builder: (context, snapshot) {
                 final data = snapshot.data?.data();
 
-                final fullName =
-                    (data?['fullName'] as String?)?.trim() ?? '';
+                final name =
+                    (data?['fullName'] as String?)?.trim() ??
+                        '';
 
-                final userName =
-                    (data?['userName'] as String?)?.trim() ?? '';
+                final username =
+                    (data?['userName'] as String?)?.trim() ??
+                        '';
 
-                final email =
-                    (data?['email'] as String?)?.trim() ??
-                    user?.email ??
-                    '';
-
-                final profileImage =
-                    (data?['profileImage'] as String?)?.trim() ?? '';
-
-                final displayName = fullName.isNotEmpty
-                    ? fullName
-                    : (user?.displayName?.isNotEmpty ?? false)
-                        ? user!.displayName!
-                        : 'Shoply User';
-
-                final imageUri = Uri.tryParse(profileImage);
-
-                final hasValidImage =
-                    imageUri != null &&
-                    imageUri.hasAuthority &&
-                    (imageUri.scheme == 'https' ||
-                        imageUri.scheme == 'http');
+                final image =
+                    (data?['profileImage'] as String?) ?? '';
 
                 return Container(
                   width: double.infinity,
@@ -87,67 +90,54 @@ class AppDrawer extends StatelessWidget {
                   color: primaryColor,
                   child: Row(
                     children: [
-                      // Profile Image
                       CircleAvatar(
                         radius: 28,
                         backgroundColor: Colors.white,
-                        child: ClipOval(
-                          child: hasValidImage
-                              ? Image.network(
-                                  profileImage,
-                                  width: 56,
-                                  height: 56,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (
-                                    context,
-                                    error,
-                                    stackTrace,
-                                  ) {
-                                    return const Icon(
-                                      Icons.person,
-                                      color: primaryColor,
-                                      size: 32,
-                                    );
-                                  },
-                                )
-                              : const Icon(
-                                  Icons.person,
-                                  color: primaryColor,
-                                  size: 32,
-                                ),
-                        ),
+                        backgroundImage: image.isNotEmpty
+                            ? NetworkImage(image)
+                            : null,
+                        child: image.isEmpty
+                            ? const Icon(
+                                Icons.person,
+                                size: 32,
+                                color: primaryColor,
+                              )
+                            : null,
                       ),
 
                       const SizedBox(width: 12),
 
-                      // User Information
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
                           children: [
                             Text(
-                              displayName,
+                              name.isNotEmpty
+                                  ? name
+                                  : user?.displayName ??
+                                      'Shoply User',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
 
                             const SizedBox(height: 4),
 
                             Text(
-                              userName.isNotEmpty
-                                  ? '@$userName'
-                                  : email,
+                              username.isNotEmpty
+                                  ? '@$username'
+                                  : user?.email ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.white70,
                                 fontSize: 12,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -164,7 +154,6 @@ class AppDrawer extends StatelessWidget {
             const SizedBox(height: 16),
 
             // ================= MENU ITEMS =================
-
             Expanded(
               child: ListView.builder(
                 itemCount: items.length,
@@ -172,7 +161,8 @@ class AppDrawer extends StatelessWidget {
                   final item = items[index];
 
                   return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding:
+                        const EdgeInsets.symmetric(
                       horizontal: 22,
                       vertical: 4,
                     ),
@@ -215,11 +205,11 @@ class AppDrawer extends StatelessWidget {
             ),
 
             // ================= LOGOUT =================
-
             const Divider(),
 
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding:
+                  const EdgeInsets.symmetric(
                 horizontal: 22,
                 vertical: 12,
               ),
@@ -247,8 +237,6 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-
-// ================= DRAWER ITEM MODEL =================
 
 class _DrawerItem {
   final String title;

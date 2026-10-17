@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shoply_app/core/model/product/product_model.dart';
-import 'package:shoply_app/features/favorites/view_model/favorites_cubit.dart';
+import 'package:shoply_app/features/favorites/repo/favorites_repo.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final ProductModel product;
   final VoidCallback? onTap;
 
@@ -16,12 +15,68 @@ class ProductCard extends StatelessWidget {
   });
 
   @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  final FavoritesRepo _favoritesRepo = FavoritesRepo();
+
+  late final Stream<Set<String>> _favoritesStream;
+
+  bool isUpdating = false;
+
+  // ================= INIT STATE =================
+
+  @override
+  void initState() {
+    super.initState();
+
+    _favoritesStream = _favoritesRepo.watchFavorites();
+  }
+
+  // ================= TOGGLE FAVORITE =================
+
+  Future<void> _toggleFavorite(bool isFavorite) async {
+    if (isUpdating) return;
+
+    setState(() {
+      isUpdating = true;
+    });
+
+    try {
+      if (isFavorite) {
+        await _favoritesRepo.removeFavorite(widget.product.id);
+      } else {
+        await _favoritesRepo.addFavorite(widget.product.id);
+      }
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Favorite error: $error'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isUpdating = false;
+        });
+      }
+    }
+  }
+
+  // ================= BUILD =================
+
+  @override
   Widget build(BuildContext context) {
+    final product = widget.product;
+
     final imageUrl =
         product.images.isNotEmpty ? product.images.first : null;
 
     return InkWell(
-      onTap: onTap,
+      onTap: widget.onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
         decoration: BoxDecoration(
@@ -35,6 +90,7 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ================= PRODUCT IMAGE =================
+
             Expanded(
               child: Stack(
                 fit: StackFit.expand,
@@ -66,14 +122,29 @@ class ProductCard extends StatelessWidget {
                   ),
 
                   // ================= FAVORITE BUTTON =================
+
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: BlocBuilder<FavoritesCubit, FavoritesState>(
-                      builder: (context, state) {
+                    child: StreamBuilder<Set<String>>(
+                      stream: _favoritesStream,
+                      builder: (context, snapshot) {
+                        // Debugging Firestore connection
+                        debugPrint(
+                          'Favorites connection: ${snapshot.connectionState}',
+                        );
+                        debugPrint(
+                          'Favorites data: ${snapshot.data}',
+                        );
+                        debugPrint(
+                          'Favorites error: ${snapshot.error}',
+                        );
+
+                        final favoriteIds =
+                            snapshot.data ?? <String>{};
+
                         final isFavorite =
-                            state is FavoritesSuccess &&
-                            state.favoriteIds.contains(product.id);
+                            favoriteIds.contains(product.id);
 
                         return Material(
                           color: Colors.white,
@@ -87,13 +158,11 @@ class ProductCard extends StatelessWidget {
                                   ? Colors.red
                                   : Colors.grey.shade400,
                             ),
-                            onPressed: state is FavoritesSuccess
-                                ? () {
-                                    context
-                                        .read<FavoritesCubit>()
-                                        .toggleFavorite(product.id);
-                                  }
-                                : null,
+                            onPressed: isUpdating ||
+                                    !snapshot.hasData ||
+                                    snapshot.hasError
+                                ? null
+                                : () => _toggleFavorite(isFavorite),
                           ),
                         );
                       },
@@ -104,6 +173,7 @@ class ProductCard extends StatelessWidget {
             ),
 
             // ================= PRODUCT INFO =================
+
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(

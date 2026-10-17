@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
+import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
 
 class CategoryProductsScreen extends StatelessWidget {
   final String categoryId;
@@ -75,6 +76,16 @@ class CategoryProductsScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ProductCard(
                     product: products[index],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailsScreen(
+                            product: products[index],
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               );
