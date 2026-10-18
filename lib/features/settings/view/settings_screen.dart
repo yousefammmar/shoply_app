@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shoply_app/core/service/upload_image_service.dart';
-
+import 'package:shoply_app/features/settings/view/widgets/change_password_dialog.dart';
+import 'package:shoply_app/features/cart/view/widgets/checkout_success_dialog.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
   @override
@@ -24,6 +25,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _loading = true;
   bool _saving = false;
   User? get _user => FirebaseAuth.instance.currentUser;
+  
+  Future<void> _changePasswordDirectly() async {
+    // Open password change form.
+    final changed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const ChangePasswordDialog(),
+    );
+
+    if (!mounted || changed != true) return;
+
+    // Show animated success message only after
+    // Firebase Auth confirms the password update.
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const CheckoutSuccessDialog(
+        title: 'Password Updated!',
+        message:
+            'Your password has been changed successfully.\n\n'
+            'Your account is now secured with your new password.',
+        buttonText: 'Done',
+      ),
+    );
+  }
 
   @override
   void initState() { super.initState(); _load(); }
@@ -174,11 +200,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const Text('Account Security', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _field('Email Address', Icons.email_outlined, _email),
-            OutlinedButton.icon(onPressed: _changeEmail, icon: const Icon(Icons.mark_email_read_outlined),
-              label: const Text('Verify New Email')),
+            
             const SizedBox(height: 11),
-            OutlinedButton.icon(onPressed: _resetPassword, icon: const Icon(Icons.lock_reset),
-              label: const Text('Change Password via Email')),
+            OutlinedButton.icon(
+                onPressed: _changePasswordDirectly,
+                icon: const Icon(
+                  Icons.lock_reset_rounded,
+                  color: Color(0xFF07583F),
+                ),
+                label: const Text('Change Password'),
+              ),
           ])),
     );
   }
