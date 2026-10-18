@@ -5,6 +5,7 @@ import 'package:shoply_app/core/model/product/product_model.dart';
 import 'package:shoply_app/features/cart/repo/cart_repo.dart';
 import 'package:shoply_app/features/favorites/repo/favorites_repo.dart';
 import 'package:shoply_app/features/products/animations/fly_to_cart_animation.dart';
+import 'package:shoply_app/features/cart/view/widgets/checkout_success_dialog.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product;
@@ -57,35 +58,81 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     ));
   }
 
+  
   Future<void> _addToCart() async {
-    if (_adding) return;
-    setState(() { _adding = true; _added = false; });
-    try {
-      await _cartRepo.addToCart(widget.product.id, quantity: _quantity);
-      if (!mounted) return;
-      HapticFeedback.mediumImpact();
-      // Decorative animation only. Cart save has already succeeded.
-      if (_imageIndex == 0 && widget.product.images.isNotEmpty) {
-        try {
-          await FlyToCartAnimation.play(
-            context: context,
-            sourceKey: _imageKey,
-            targetKey: _cartKey,
-            imageUrl: widget.product.images.first,
-          );
-        } catch (_) {
-          // A visual effect should never turn a saved cart action into failure.
+          if (_adding) return;
+
+          setState(() {
+            _adding = true;
+            _added = false;
+          });
+
+          try {
+            final addedQuantity = _quantity;
+
+            // Step 1: Save product to Firestore.
+            await _cartRepo.addToCart(
+              widget.product.id,
+              quantity: addedQuantity,
+            );
+
+            if (!mounted) return;
+
+            HapticFeedback.mediumImpact();
+
+            // Step 2: Play Fly-to-Cart animation.
+            if (_imageIndex == 0 &&
+                widget.product.images.isNotEmpty) {
+              try {
+                await FlyToCartAnimation.play(
+                  context: context,
+                  sourceKey: _imageKey,
+                  targetKey: _cartKey,
+                  imageUrl: widget.product.images.first,
+                );
+              } catch (_) {
+                // Animation failure should not affect
+                // a successfully saved cart item.
+              }
+            }
+
+            if (!mounted) return;
+
+            setState(() {
+              _added = true;
+            });
+
+            // Step 3: Display animated success dialog.
+            await showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return CheckoutSuccessDialog(
+                  title: 'Added to Cart!',
+                  message:
+                      '${widget.product.name}\n'
+                      'Quantity: $_quantity\n\n'
+                      'Your product has been added to your shopping cart.',
+                  buttonText: 'Continue Shopping',
+                );
+              },
+            );
+          } catch (error) {
+            if (!mounted) return;
+
+            _message(
+              'Unable to add to cart: $error',
+              error: true,
+            );
+          } finally {
+            if (mounted) {
+              setState(() {
+                _adding = false;
+              });
+            }
+          }
         }
-      }
-      if (!mounted) return;
-      setState(() => _added = true);
-      _message('Product added to cart successfully!');
-    } catch (e) {
-      if (mounted) _message('Unable to add to cart: $e', error: true);
-    } finally {
-      if (mounted) setState(() => _adding = false);
-    }
-  }
+
 
   Widget _gallery(bool reduceMotion) {
     final images = widget.product.images;

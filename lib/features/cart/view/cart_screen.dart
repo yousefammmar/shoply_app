@@ -7,6 +7,7 @@ import 'package:shoply_app/features/cart/view_model/cart_cubit.dart';
 import 'package:shoply_app/features/cart/view/widgets/checkout_success_dialog.dart';
 import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
+import 'package:shoply_app/core/utils/widgets/dialog/app_confirmation_dialog.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -30,7 +31,39 @@ class _CartBodyState extends State<_CartBody> {
   static const green = Color(0xFF07583F);
   bool _checkingOut = false;
   final Set<String> _busy = {};
+  Future<void> _removeProduct(
+    ProductModel product,
+    int quantity,
+  ) async {
+    try {
+      await context.read<CartCubit>().removeFromCart(
+        product.id,
+      );
 
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${product.name}\n'
+            'Quantity: $quantity\n'
+            'Removed from cart successfully!',
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to remove item: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
   void _message(String value, {bool error = false}) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -38,7 +71,27 @@ class _CartBodyState extends State<_CartBody> {
       behavior: SnackBarBehavior.floating,
     ));
   }
+  Future<void> _confirmRemoveProduct(
+      ProductModel product,
+      int quantity,
+    ) async {
+      final confirmed = await AppConfirmationDialog.show(
+        context: context,
+        title: 'Remove Item?',
+        message:
+            'Are you sure you want to remove this product?\n\n'
+            '${product.name}\n'
+            'Quantity: $quantity',
+        confirmText: 'Remove',
+        cancelText: 'Keep Item',
+        icon: Icons.delete_outline_rounded,
+        isDangerous: true,
+      );
 
+      if (!confirmed || !mounted) return;
+
+      await _removeProduct(product, quantity);
+    }
   Future<void> _changeQuantity(String id, int value) async {
     if (_checkingOut || _busy.contains(id) || value < 1) return;
     setState(() => _busy.add(id));
@@ -49,32 +102,7 @@ class _CartBodyState extends State<_CartBody> {
     finally { if (mounted) setState(() => _busy.remove(id)); }
   }
 
-  Future<bool> _remove(ProductModel product, int quantity) async {
-    if (_checkingOut || _busy.contains(product.id)) return false;
-    final cubit = context.read<CartCubit>();
-    setState(() => _busy.add(product.id));
-    try {
-      await cubit.removeFromCart(product.id);
-      if (!mounted) return true;
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(SnackBar(
-        content: Text('${product.name} removed'),
-        duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(label: 'UNDO', textColor: Colors.white,
-          onPressed: () async {
-            try {
-              await cubit.addToCart(product.id, quantity: quantity);
-            } catch (e) { _message('Undo failed: $e', error: true); }
-          }),
-      ));
-      return true;
-    } catch (e) {
-      _message('Remove failed: $e', error: true);
-      return false;
-    } finally { if (mounted) setState(() => _busy.remove(product.id)); }
-  }
+  
 
   Future<void> _checkout(List<ProductModel> products) async {
     if (_checkingOut || _busy.isNotEmpty) return;
@@ -130,7 +158,17 @@ class _CartBodyState extends State<_CartBody> {
               return Dismissible(
                 key: ValueKey('cart-${product.id}'),
                 direction: busy ? DismissDirection.none : DismissDirection.endToStart,
-                confirmDismiss: (_) async { await _remove(product, quantity); return false; },
+                confirmDismiss: (_) async 
+                {
+                  await _confirmRemoveProduct(
+                    product,
+                    quantity,
+                  );
+
+                  // Firestore updates the list through CartCubit.
+                  // Do not let Dismissible remove the item a second time.
+                  return false;
+                },
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 24),
@@ -143,7 +181,10 @@ class _CartBodyState extends State<_CartBody> {
                   busy: busy,
                   onAdd: () => _changeQuantity(product.id, quantity + 1),
                   onMinus: quantity == 1 ? null : () => _changeQuantity(product.id, quantity - 1),
-                  onDelete: () => _remove(product, quantity),
+                  onDelete: () => _confirmRemoveProduct(
+                      product,
+                      quantity,
+                    ),
                 ),
               );
             },

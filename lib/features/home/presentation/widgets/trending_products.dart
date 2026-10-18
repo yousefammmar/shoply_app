@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
 
+import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
 class TrendingProducts extends StatefulWidget {
   const TrendingProducts({super.key});
 
@@ -139,6 +140,12 @@ class _TrendingProductsState extends State<TrendingProducts> {
                   Widget card = ProductCard(
                     key: ValueKey(product.id),
                     product: product,
+                    onTap: ()
+                    {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_)=>ProductDetailsScreen(product:product))
+                      );
+                    }
                   );
 
                   if (!shouldAnimate) return card;

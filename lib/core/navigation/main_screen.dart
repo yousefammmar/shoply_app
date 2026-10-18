@@ -23,7 +23,7 @@ import 'package:shoply_app/features/orders/view/order_history_screen.dart';
 import 'package:shoply_app/features/profile/view/profile_screen.dart';
 import 'package:shoply_app/features/settings/view/settings_screen.dart';
 import 'package:shoply_app/features/about/view/about_screen.dart';
-
+import 'package:shoply_app/core/utils/widgets/dialog/app_confirmation_dialog.dart';
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
   static const green = Color(0xFF07583F);
@@ -41,7 +41,22 @@ class MainScreen extends StatelessWidget {
       }
     }
   }
+  Future<void> _confirmLogout(BuildContext context) async {
+    final confirmed = await AppConfirmationDialog.show(
+      context: context,
+      title: 'Log Out?',
+      message:
+          'Are you sure you want to log out of your Shoply account?',
+      confirmText: 'Log Out',
+      cancelText: 'Stay',
+      icon: Icons.logout_rounded,
+      isDangerous: true,
+    );
 
+    if (!confirmed || !context.mounted) return;
+
+    await _logout(context);
+  }
   void _openPage(BuildContext context, Widget page) {
     final reduced = MediaQuery.disableAnimationsOf(context);
     Navigator.of(context).push(PageRouteBuilder<void>(
@@ -77,7 +92,7 @@ class MainScreen extends StatelessWidget {
           )),
         ),
         drawer: AppDrawer(
-          onLogout: () => _logout(context),
+          onLogout: () => _confirmLogout(context),
           onProfile: () => _openPage(context, const ProfileScreen()),
           onOrders: () => _openPage(context, const OrderHistoryScreen()),
           onFavorites: () => mainCubit.changeTab(2),
