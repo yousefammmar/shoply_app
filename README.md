@@ -335,5 +335,11 @@ Contributions and constructive feedback are welcome. For significant changes, op
 # [Favorites Screen](https://github.com/yousefammmar/shoply_app/issues/13)
 # [Cart Screen](https://github.com/yousefammmar/shoply_app/issues/14)
 # [Remove from Cart](https://github.com/yousefammmar/shoply_app/issues/15)
-### [Checkout](https://github.com/yousefammmar/shoply_app/issues/16)
+# [Checkout](https://github.com/yousefammmar/shoply_app/issues/16)
+# [Sidebar](https://github.com/yousefammmar/shoply_app/issues/17)
+# [Order History Screen](https://github.com/yousefammmar/shoply_app/issues/18)
+# [Settings Screen](https://github.com/yousefammmar/shoply_app/issues/19)
+# [Profile Screen](https://github.com/yousefammmar/shoply_app/issues/20)
+# [About Shoply Screen](https://github.com/yousefammmar/shoply_app/issues/21)
+# [Logout](https://github.com/yousefammmar/shoply_app/issues/22)
 
