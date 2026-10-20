@@ -329,6 +329,11 @@ Contributions and constructive feedback are welcome. For significant changes, op
 ## [Create Account Successfully](https://github.com/yousefammmar/shoply_app/issues/7)
 ## [Home Page](https://github.com/yousefammmar/shoply_app/issues/8)
 ## [Products](https://github.com/yousefammmar/shoply_app/issues/9)
-##[Product Details Page](https://github.com/yousefammmar/shoply_app/issues/10)
+## [Product Details Page](https://github.com/yousefammmar/shoply_app/issues/10)
+## [Add to Cart](https://github.com/yousefammmar/shoply_app/issues/11)
+## [Categories Screen](https://github.com/yousefammmar/shoply_app/issues/12)
+## [Favorites Screen](https://github.com/yousefammmar/shoply_app/issues/13)
+## [Cart Screen](https://github.com/yousefammmar/shoply_app/issues/14)
+## [Remove from Cart](https://github.com/yousefammmar/shoply_app/issues/15)
 
 
