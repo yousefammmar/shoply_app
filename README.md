@@ -325,4 +325,10 @@ Contributions and constructive feedback are welcome. For significant changes, op
 ## [Login Screen](https://github.com/yousefammmar/shoply_app/issues/3)
 ## [Forget Password Screen](https://github.com/yousefammmar/shoply_app/issues/4)
 ## [Create a New Account](https://github.com/yousefammmar/shoply_app/issues/5)
+## [Unsuccessful Login](https://github.com/yousefammmar/shoply_app/issues/6)
+## [Create Account Successfully](https://github.com/yousefammmar/shoply_app/issues/7)
+## [Home Page](https://github.com/yousefammmar/shoply_app/issues/8)
+## [Products](https://github.com/yousefammmar/shoply_app/issues/9)
+##[Product Details Page](https://github.com/yousefammmar/shoply_app/issues/10)
+
 
