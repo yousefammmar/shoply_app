@@ -19,7 +19,7 @@ class _OnBoardingBottom extends StatelessWidget {
                   pageController: cubit.pageController,
                   count: 3,
                 ),
-                SizedBox(height: 55),
+                SizedBox(height: 24),
                 Column(
                   children: [
                     CustomButton(

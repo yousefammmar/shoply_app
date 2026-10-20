@@ -7,7 +7,7 @@ class _OnBoardingHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 2,
+      flex: 3,
       child: BlocBuilder<OnBoardingCubit, OnBoardingState>(
         buildWhen: (previous, current) {
           return current is! OnBoardingChangeIndexState;
@@ -22,78 +22,75 @@ class _OnBoardingHeader extends StatelessWidget {
               cubit.changeIndex(index: index);
             },
             itemBuilder: (context, index) {
-              return Center(
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.network(
-                      cubit.onBoardImage[index],
-                      height: 400,
-                      width: double.infinity,
-                      fit: BoxFit.contain,
+                    // Flexible image height
+                    Expanded(
+                      child: Image.network(
+                        cubit.onBoardImage[index],
+                        width: double.infinity,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (
+                          context,
+                          child,
+                          loadingProgress,
+                        ) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
 
-                      // Loading indicator
-                      loadingBuilder: (
-                        context,
-                        child,
-                        loadingProgress,
-                      ) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-
-                        return const SizedBox(
-                          height: 400,
-                          child: Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-
-                      // Error handling
-                      errorBuilder: (
-                        context,
-                        error,
-                        stackTrace,
-                      ) {
-                        debugPrint('Image loading error: $error');
-
-                        return const SizedBox(
-                          height: 400,
-                          child: Center(
+                          );
+                        },
+                        errorBuilder: (
+                          context,
+                          error,
+                          stackTrace,
+                        ) {
+                          return const Center(
                             child: Icon(
                               Icons.broken_image,
-                              size: 60,
+                              size: 50,
                               color: Colors.grey,
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
 
                     Text(
                       cubit.onBoardTitle[index],
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 30,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
-                      textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
                     Text(
                       cubit.onBoardDescreption[index],
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
                         color: Colors.grey.shade600,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),

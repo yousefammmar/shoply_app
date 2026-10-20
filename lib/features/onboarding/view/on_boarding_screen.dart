@@ -21,7 +21,7 @@ class OnBoardingScreen extends StatelessWidget {
           child: Column(
             children: [
               _OnBoardingHeader(),
-              SizedBox(height: 20),
+              SizedBox(height: 8),
               _OnBoardingBottom(),
             ],
           ),

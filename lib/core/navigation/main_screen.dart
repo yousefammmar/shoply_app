@@ -44,10 +44,10 @@ class MainScreen extends StatelessWidget {
   Future<void> _confirmLogout(BuildContext context) async {
     final confirmed = await AppConfirmationDialog.show(
       context: context,
-      title: 'Log Out?',
+      title: 'Logout?',
       message:
-          'Are you sure you want to log out of your Shoply account?',
-      confirmText: 'Log Out',
+          'Are you sure you want to logout of your Shoply account?',
+      confirmText: 'Logout',
       cancelText: 'Stay',
       icon: Icons.logout_rounded,
       isDangerous: true,
