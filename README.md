@@ -342,4 +342,5 @@ Contributions and constructive feedback are welcome. For significant changes, op
 # [Profile Screen](https://github.com/yousefammmar/shoply_app/issues/20)
 # [About Shoply Screen](https://github.com/yousefammmar/shoply_app/issues/21)
 # [Logout](https://github.com/yousefammmar/shoply_app/issues/22)
+# [Firebase](https://github.com/yousefammmar/shoply_app/issues/23)
 
