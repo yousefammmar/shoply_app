@@ -318,3 +318,6 @@ Contributions and constructive feedback are welcome. For significant changes, op
 [View the source on GitHub](https://github.com/yousefammmar/shoply_app)
 
 </div>
+
+
+-- App Logo (https://github.com/yousefammmar/shoply_app/issues/1)
