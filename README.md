@@ -320,4 +320,9 @@ Contributions and constructive feedback are welcome. For significant changes, op
 </div>
 
 
--- App Logo (https://github.com/yousefammmar/shoply_app/issues/1)
+## [App Logo](https://github.com/yousefammmar/shoply_app/issues/1)
+## [Onboarding Screens](https://github.com/yousefammmar/shoply_app/issues/2)
+## [Login Screen](https://github.com/yousefammmar/shoply_app/issues/3)
+## [Forget Password Screen](https://github.com/yousefammmar/shoply_app/issues/4)
+## [Create a New Account](https://github.com/yousefammmar/shoply_app/issues/5)
+
