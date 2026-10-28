@@ -35,22 +35,23 @@ class _MainTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return TextFormField(
       obscureText: isHide ?? false,
       controller: widget.controller,
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: cs.onSurface,
       ),
       textInputAction: TextInputAction.next,
       validator: widget.validator,
-      cursorColor: Colors.grey,
+      cursorColor: cs.onSurfaceVariant,
       decoration: InputDecoration(
         helperText: '',
         helperStyle: TextStyle(fontSize: 12),
         hintText: widget.hinText,
-        hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 17),
+        hintStyle: TextStyle(color: cs.onSurfaceVariant, fontSize: 17),
         suffixIcon: widget.obscureText == true
             ? GestureDetector(
                 onTap: () {
@@ -60,18 +61,18 @@ class _MainTextFieldState extends State<CustomTextField> {
                     ? Icon(
                         Icons.visibility_off_outlined,
                         size: 28,
-                        color: Colors.grey.shade800,
+                        color: cs.onSurface.withValues(alpha: 0.75),
                       )
                     : Icon(
                         Icons.visibility_outlined,
                         size: 28,
-                        color: Colors.grey.shade800,
+                        color: cs.onSurface.withValues(alpha: 0.75),
                       ),
               )
             : null,
         contentPadding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
         prefixIcon: widget.prefixIcon,
-        fillColor: Colors.grey.shade300.withValues(alpha: 0.5),
+        fillColor: cs.onSurface.withValues(alpha: 0.06),
         filled: true,
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -87,7 +88,7 @@ class _MainTextFieldState extends State<CustomTextField> {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.red, width: 1),
+          borderSide: BorderSide(color: cs.error, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),

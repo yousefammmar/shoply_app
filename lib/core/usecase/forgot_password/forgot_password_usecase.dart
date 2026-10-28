@@ -18,7 +18,8 @@ class ForgotPasswordUsecase {
       );
       return Right(true);
     } on FirebaseAuthException catch (e) {
-      return Left(e.message ?? '');
+      // The UI turns the code into a localized message.
+      return Left(e.code);
     }
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shoply_app/core/helper/error_handle_helper.dart';
 import 'package:shoply_app/core/regex/app_regex.dart';
 import 'package:shoply_app/core/routes/app_pages.dart';
 import 'package:shoply_app/core/utils/images/app_images.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
 import 'package:shoply_app/core/utils/widgets/app_bar/custom_app_bar.dart';
 import 'package:shoply_app/core/utils/widgets/button/custom_button.dart';
 import 'package:shoply_app/core/utils/widgets/dialog/custom_dialog_error.dart';
@@ -13,6 +13,7 @@ import 'package:shoply_app/core/utils/widgets/text_button/custom_text_button_wra
 import 'package:shoply_app/core/utils/widgets/textfield/custom_text_field.dart';
 import 'package:shoply_app/features/signup/view_model/cubit.dart';
 import 'package:shoply_app/features/signup/view_model/state.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 part 'widgets/singup_header.dart';
 part 'widgets/signup_name_textfield.dart';
 part 'widgets/signup_email_address_textfield.dart';
@@ -27,7 +28,7 @@ class SignupScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => SignupCubit(),
       child: Scaffold(
-        appBar: CustomAppBar(titleText: 'Create Account'),
+        appBar: CustomAppBar(titleText: context.l10n.createAccount),
         body: BlocListener<SignupCubit, SignupState>(
           listener: (context, state) {
             if (state is SignupLoadingState) {
@@ -36,8 +37,11 @@ class SignupScreen extends StatelessWidget {
               Navigator.pop(context);
               CustomDialogError.showProDialogError(
                 context: context,
-                title: 'Sign Up Error',
-                description: state.errorMessage,
+                title: context.l10n.signUpError,
+                description: ErrorHandleHelper.getCustomErrorMessage(
+                  context.l10n,
+                  state.errorMessage,
+                ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -46,8 +50,8 @@ class SignupScreen extends StatelessWidget {
               Navigator.pop(context);
               CustomSuccessDialog.showProSuccessDialog(
                 context: context,
-                title: 'Sign Up Success',
-                description: state.successMessage,
+                title: context.l10n.signUpSuccessTitle,
+                description: context.l10n.signUpSuccessMessage,
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                     context,

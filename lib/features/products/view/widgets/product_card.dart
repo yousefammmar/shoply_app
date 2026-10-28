@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:shoply_app/core/model/product/product_model.dart';
 import 'package:shoply_app/features/favorites/repo/favorites_repo.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -21,8 +22,6 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  static const Color primaryColor = Color(0xFF07583F);
-
   final FavoritesRepo _favoritesRepo = FavoritesRepo();
 
   late final Stream<Set<String>> _favoritesStream;
@@ -54,7 +53,7 @@ class _ProductCardState extends State<ProductCard> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Favorite error: $error'),
+          content: Text(context.l10n.favoriteUpdateFailed(error)),
         ),
       );
     } finally {
@@ -69,6 +68,8 @@ class _ProductCardState extends State<ProductCard> {
     final product = widget.product;
 
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
 
     final imageUrl = product.images.isNotEmpty
         ? product.images.first
@@ -129,9 +130,9 @@ class _ProductCardState extends State<ProductCard> {
         curve: Curves.easeOutCubic,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cs.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(color: cs.outlineVariant),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,9 +145,9 @@ class _ProductCardState extends State<ProductCard> {
                     productImage,
 
                     // ================= FAVORITE BUTTON =================
-                    Positioned(
+                    PositionedDirectional(
                       top: 8,
-                      right: 8,
+                      end: 8,
                       child: StreamBuilder<Set<String>>(
                         stream: _favoritesStream,
                         builder: (context, snapshot) {
@@ -162,8 +163,8 @@ class _ProductCardState extends State<ProductCard> {
                                 : const Duration(milliseconds: 220),
                             decoration: BoxDecoration(
                               color: isFavorite
-                                  ? const Color(0xFFFFF0F1)
-                                  : Colors.white,
+                                  ? Colors.redAccent.withValues(alpha: 0.1)
+                                  : cs.surface,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -177,8 +178,8 @@ class _ProductCardState extends State<ProductCard> {
                             ),
                             child: IconButton(
                               tooltip: isFavorite
-                                  ? 'Remove from favorites'
-                                  : 'Add to favorites',
+                                  ? l10n.removeFromFavorites
+                                  : l10n.addToFavorites,
                               icon: AnimatedSwitcher(
                                 duration: reduceMotion
                                     ? Duration.zero
@@ -199,7 +200,7 @@ class _ProductCardState extends State<ProductCard> {
                                   key: ValueKey(isFavorite),
                                   color: isFavorite
                                       ? Colors.redAccent
-                                      : Colors.grey.shade500,
+                                      : cs.onSurfaceVariant,
                                 ),
                               ),
                               onPressed: isUpdating ||
@@ -226,10 +227,10 @@ class _ProductCardState extends State<ProductCard> {
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: cs.onSurface,
                       ),
                     ),
 
@@ -237,10 +238,10 @@ class _ProductCardState extends State<ProductCard> {
 
                     Text(
                       '\$${product.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: primaryColor,
+                        color: cs.primary,
                       ),
                     ),
                   ],

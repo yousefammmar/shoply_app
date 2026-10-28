@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class CustomLoading extends StatelessWidget {
   const CustomLoading({super.key});
@@ -13,16 +13,17 @@ class CustomLoading extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return const Center(
+        final primary = Theme.of(context).colorScheme.primary;
+        return Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: AppColors.primaryColor),
-              SizedBox(height: 15),
+              CircularProgressIndicator(color: primary),
+              const SizedBox(height: 15),
               Text(
-                'Please wait...',
+                context.l10n.pleaseWait,
                 style: TextStyle(
-                  color: AppColors.primaryColor,
+                  color: primary,
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
                 ),

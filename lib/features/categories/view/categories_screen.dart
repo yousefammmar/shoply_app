@@ -4,13 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoply_app/features/categories/view_model/categories_cubit.dart';
 import 'package:shoply_app/features/categories/view_model/categories_state.dart';
 import 'package:shoply_app/features/products/view/category_products_screen.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: BlocBuilder<CategoriesCubit, CategoriesState>(
         builder: (context, state) {
           if (state is CategoriesLoading ||
@@ -22,14 +24,17 @@ class CategoriesScreen extends StatelessWidget {
 
           if (state is CategoriesError) {
             return Center(
-              child: Text(state.message),
+              child: Text(
+                l10n.errorWithDetails(state.message),
+                textAlign: TextAlign.center,
+              ),
             );
           }
 
           if (state is CategoriesLoaded) {
             if (state.categories.isEmpty) {
-              return const Center(
-                child: Text('No categories available'),
+              return Center(
+                child: Text(l10n.noCategories),
               );
             }
 
@@ -41,6 +46,10 @@ class CategoriesScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 
                 final category = state.categories[index];
+                final categoryName = l10n.categoryName(
+                  category.id,
+                  category.name,
+                );
                 
                 return InkWell
                   (
@@ -50,20 +59,20 @@ class CategoriesScreen extends StatelessWidget {
                       Navigator.push
                       (
                         context,
-                        MaterialPageRoute(builder: (_)=>CategoryProductsScreen(categoryId: category.id, categoryName: category.name))
+                        MaterialPageRoute(builder: (_)=>CategoryProductsScreen(categoryId: category.id, categoryName: categoryName))
                       );
                     },
                     child:Container(
                           height: 90,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF7F7F7),
+                            color: cs.surfaceContainerLow,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
                             children: [
                               ClipRRect(
-                                borderRadius: const BorderRadius.horizontal(
-                                  left: Radius.circular(16),
+                                borderRadius: const BorderRadiusDirectional.horizontal(
+                                  start: Radius.circular(16),
                                 ),
                                 child: Image.network(
                                   category.image,
@@ -80,7 +89,7 @@ class CategoriesScreen extends StatelessWidget {
                               const SizedBox(width: 16),
                               Expanded(
                                 child: Text(
-                                  category.name,
+                                  categoryName,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,

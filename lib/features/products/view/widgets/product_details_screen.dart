@@ -6,6 +6,7 @@ import 'package:shoply_app/features/cart/repo/cart_repo.dart';
 import 'package:shoply_app/features/favorites/repo/favorites_repo.dart';
 import 'package:shoply_app/features/products/animations/fly_to_cart_animation.dart';
 import 'package:shoply_app/features/cart/view/widgets/checkout_success_dialog.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product;
@@ -15,7 +16,6 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  static const green = Color(0xFF07583F);
   final _cartRepo = CartRepo();
   final _favoritesRepo = FavoritesRepo();
   final _imageKey = GlobalKey();
@@ -44,17 +44,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       }
       HapticFeedback.selectionClick();
     } catch (e) {
-      if (mounted) _message('Could not update favorites: $e', error: true);
+      if (mounted) _message(context.l10n.favoriteUpdateFailed(e), error: true);
     } finally {
       if (mounted) setState(() => _favoriteBusy = false);
     }
   }
 
   void _message(String msg, {bool error = false}) {
+    final cs = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: error ? Colors.red : green,
+      backgroundColor: error ? cs.error : cs.primary,
     ));
   }
 
@@ -108,12 +109,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               barrierDismissible: false,
               builder: (context) {
                 return CheckoutSuccessDialog(
-                  title: 'Added to Cart!',
-                  message:
-                      '${widget.product.name}\n'
-                      'Quantity: $_quantity\n\n'
-                      'Your product has been added to your shopping cart.',
-                  buttonText: 'Continue Shopping',
+                  title: context.l10n.addedToCart,
+                  message: context.l10n.addedToCartMessage(
+                    widget.product.name,
+                    _quantity,
+                  ),
+                  buttonText: context.l10n.continueShopping,
                 );
               },
             );
@@ -121,7 +122,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             if (!mounted) return;
 
             _message(
-              'Unable to add to cart: $error',
+              context.l10n.addToCartFailed(error),
               error: true,
             );
           } finally {
@@ -135,6 +136,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
 
   Widget _gallery(bool reduceMotion) {
+    final cs = Theme.of(context).colorScheme;
     final images = widget.product.images;
     if (images.isEmpty) {
       return const SizedBox(height: 290, child: Center(child: Icon(Icons.image_not_supported_outlined, size: 56)));
@@ -149,7 +151,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             onPageChanged: (i) => setState(() => _imageIndex = i),
             itemBuilder: (context, i) {
               Widget image = Container(
-                color: const Color(0xFFF7F9F8),
+                color: cs.surfaceContainerLow,
                 alignment: Alignment.center,
                 child: Image.network(images[i], fit: BoxFit.contain,
                   errorBuilder: (_, _, _) => const Icon(Icons.broken_image_outlined, size: 45)),
@@ -173,7 +175,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             width: i == _imageIndex ? 25 : 8,
             height: 8,
             margin: const EdgeInsets.symmetric(horizontal: 3),
-            decoration: BoxDecoration(color: i == _imageIndex ? green : Colors.grey.shade300,
+            decoration: BoxDecoration(color: i == _imageIndex ? cs.primary : cs.outlineVariant,
                 borderRadius: BorderRadius.circular(20)),
           );
         })),
@@ -185,35 +187,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     final product = widget.product;
     final reduced = MediaQuery.disableAnimationsOf(context);
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     Widget reveal(Widget child, int delay) => reduced ? child : child.animate()
         .fadeIn(delay: Duration(milliseconds: delay), duration: 350.ms)
         .slideY(begin: .07, end: 0, delay: Duration(milliseconds: delay), duration: 430.ms);
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: green,
+        foregroundColor: cs.primary,
         actions: [
           StreamBuilder<Set<String>>(
             stream: _favorites,
             builder: (context, snapshot) {
               final selected = snapshot.data?.contains(product.id) ?? false;
               return IconButton(
-                tooltip: selected ? 'Remove from favorites' : 'Add to favorites',
+                tooltip: selected ? l10n.removeFromFavorites : l10n.addToFavorites,
                 onPressed: snapshot.hasData && !snapshot.hasError && !_favoriteBusy
                     ? () => _toggleFavorite(selected) : null,
                 icon: AnimatedSwitcher(
                   duration: reduced ? Duration.zero : const Duration(milliseconds: 230),
                   transitionBuilder: (child, a) => ScaleTransition(scale: a, child: child),
                   child: Icon(selected ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                      key: ValueKey(selected), color: selected ? Colors.redAccent : green),
+                      key: ValueKey(selected), color: selected ? Colors.redAccent : cs.primary),
                 ),
               );
             },
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 14),
-            child: Icon(Icons.shopping_cart_rounded, key: _cartKey, color: green),
+            padding: const EdgeInsetsDirectional.only(end: 14),
+            child: Icon(Icons.shopping_cart_rounded, key: _cartKey, color: cs.primary),
           ),
         ],
       ),
@@ -226,12 +228,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           reveal(Text(product.name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)), 70),
           const SizedBox(height: 10),
           reveal(Text('\$${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: green)), 130),
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: cs.primary)), 130),
           const SizedBox(height: 18),
-          reveal(Text(product.description, style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.black54)), 190),
+          reveal(Text(product.description, style: TextStyle(fontSize: 16, height: 1.5, color: cs.onSurfaceVariant)), 190),
           const SizedBox(height: 24),
           Row(children: [
-            const Text('Quantity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            Text(l10n.quantity, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const Spacer(),
             IconButton(onPressed: _adding || _quantity <= 1 ? null : () {
               HapticFeedback.selectionClick(); setState(() { _quantity--; _added = false; });
@@ -248,17 +250,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           const SizedBox(height: 25),
           SizedBox(width: double.infinity, height: 54, child: ElevatedButton(
             onPressed: _adding ? null : _addToCart,
-            style: ElevatedButton.styleFrom(backgroundColor: green, foregroundColor: Colors.white,
+            style: ElevatedButton.styleFrom(backgroundColor: cs.primary, foregroundColor: cs.onPrimary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
             child: AnimatedSwitcher(
               duration: reduced ? Duration.zero : const Duration(milliseconds: 200),
               child: _adding
-                  ? const SizedBox(key: ValueKey('loading'), height: 22, width: 22,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  ? SizedBox(key: const ValueKey('loading'), height: 22, width: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: cs.onPrimary))
                   : Row(key: ValueKey(_added), mainAxisSize: MainAxisSize.min, children: [
                       Icon(_added ? Icons.check_circle_rounded : Icons.shopping_cart_outlined),
                       const SizedBox(width: 9),
-                      Text(_added ? 'Added to Cart!' : 'Add to Cart'),
+                      Text(_added ? l10n.addedToCart : l10n.addToCart),
                     ]),
             ),
           )),

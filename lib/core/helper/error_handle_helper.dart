@@ -1,20 +1,29 @@
+import 'package:shoply_app/l10n/app_localizations.dart';
+
 class ErrorHandleHelper {
-  static String getCustomErrorMessage(String errorCode) {
+  static String getCustomErrorMessage(AppLocalizations l10n, String errorCode) {
     switch (errorCode) {
       case 'invalid-credential':
-        return 'Incorrect email or password. Please try again.';
+      case 'wrong-password':
+        return l10n.authErrorInvalidCredential;
       case 'email-already-in-use':
-        return 'This email address is already registered.';
+        return l10n.authErrorEmailInUse;
       case 'weak-password':
-        return 'The password entered is too weak. Try a longer combination.';
+        return l10n.authErrorWeakPassword;
       case 'invalid-email':
-        return 'Please enter a valid email address.';
+        return l10n.authErrorInvalidEmail;
       case 'user-disabled':
-        return 'This user account has been disabled. Contact support.';
+        return l10n.authErrorUserDisabled;
+      case 'user-not-found':
+        return l10n.authErrorUserNotFound;
       case 'too-many-requests':
-        return 'Too many login attempts. Please try again later.';
+        return l10n.authErrorTooManyRequests;
+      case 'network-request-failed':
+        return l10n.authErrorNetwork;
+      case 'image-upload-failed':
+        return l10n.authErrorImageUpload;
       default:
-        return 'An unexpected authentication error occurred. Please try again.';
+        return l10n.authErrorUnexpected;
     }
   }
 }

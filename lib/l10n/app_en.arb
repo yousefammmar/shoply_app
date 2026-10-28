@@ -1,0 +1,351 @@
+{
+  "@@locale": "en",
+  "gotIt": "Got it",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "done": "Done",
+  "tryAgain": "Try Again",
+  "pleaseWait": "Please wait...",
+  "loading": "Loading...",
+  "unavailable": "Unavailable",
+  "notProvided": "Not provided",
+  "requiredField": "Required",
+  "somethingWentWrong": "Something went wrong",
+  "errorWithDetails": "Something went wrong:\n{details}",
+  "@errorWithDetails": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "shoplyUser": "Shoply User",
+  "pleaseLogIn": "Please log in first",
+  "addToFavorites": "Add to favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "favoriteUpdateFailed": "Could not update favorites: {error}",
+  "@favoriteUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "total": "Total",
+  "product": "Product",
+  "quantity": "Quantity",
+  "onboardingTitle1": "Discover Amazing Products",
+  "onboardingDescription1": "Find everything you need in one place.",
+  "onboardingTitle2": "Shop Your Style",
+  "onboardingDescription2": "Top brands, great prices and the latest trends.",
+  "onboardingTitle3": "Fast & Safe Delivery",
+  "onboardingDescription3": "Get your orders delivered right to your doorstep.",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "skip": "Skip",
+  "welcomeBack": "Welcome Back",
+  "signInToContinue": "Sign in to continue shopping",
+  "email": "Email",
+  "password": "Password",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Email is not valid",
+  "passwordRequired": "Password is required",
+  "forgotPassword": "Forgot Password?",
+  "login": "Login",
+  "noAccount": "Don't have an account?",
+  "signUp": "Sign Up",
+  "loginError": "Login Error",
+  "createAccount": "Create Account",
+  "joinUs": "Join us and start shopping",
+  "fullName": "Full Name",
+  "fullNameRequired": "Full Name is required",
+  "username": "Username",
+  "usernameRequired": "Username is required",
+  "address": "Address",
+  "addressRequired": "Address is required",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "passwordPattern": "Password must contain at least one uppercase letter and one special character",
+  "confirmPassword": "Confirm Password",
+  "confirmPasswordRequired": "Confirm Password is required",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "alreadyHaveAccount": "Already have an account?",
+  "signUpError": "Sign Up Error",
+  "signUpSuccessTitle": "Sign Up Success",
+  "signUpSuccessMessage": "Your account was created successfully.",
+  "forgotPasswordSubtitle": "Enter your email and we'll send\nyou a reset link.",
+  "sendResetLink": "Send Reset Link",
+  "backToLogin": "Back to Login",
+  "forgotPasswordError": "Forgot Password Error",
+  "resetLinkSentTitle": "Reset Link Sent",
+  "resetLinkSentMessage": "Reset email sent successfully.",
+  "authErrorInvalidCredential": "Incorrect email or password. Please try again.",
+  "authErrorEmailInUse": "This email address is already registered.",
+  "authErrorWeakPassword": "The password entered is too weak. Try a longer combination.",
+  "authErrorInvalidEmail": "Please enter a valid email address.",
+  "authErrorUserDisabled": "This user account has been disabled. Contact support.",
+  "authErrorUserNotFound": "No account was found for this email.",
+  "authErrorTooManyRequests": "Too many attempts. Please try again later.",
+  "authErrorNetwork": "Please check your internet connection.",
+  "authErrorImageUpload": "Profile image upload failed. Please try again.",
+  "authErrorUnexpected": "An unexpected error occurred. Please try again.",
+  "home": "Home",
+  "categories": "Categories",
+  "favorites": "Favorites",
+  "cart": "Cart",
+  "myProfile": "My Profile",
+  "myOrders": "My Orders",
+  "settings": "Settings",
+  "aboutShoply": "About Shoply",
+  "logout": "Logout",
+  "logoutTitle": "Logout?",
+  "logoutMessage": "Are you sure you want to logout of your Shoply account?",
+  "stay": "Stay",
+  "logoutFailed": "Logout failed: {error}",
+  "@logoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "trendingProducts": "Trending Products",
+  "popular": "Popular",
+  "noTrendingProducts": "No trending products available",
+  "categoryName": "{id, select, clothes{Tops} bags{Bags} shoes{Shoes} glasses{Sunglasses} perfumes{Perfumes} other{{fallback}}}",
+  "@categoryName": {
+    "description": "Display name for a Firestore category id; unknown ids show the stored name.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "noCategories": "No categories available",
+  "noProductsInCategory": "No products found in this category",
+  "noProducts": "No products available",
+  "addToCart": "Add to Cart",
+  "addedToCart": "Added to Cart!",
+  "addedToCartMessage": "{productName}\nQuantity: {quantity}\n\nYour product has been added to your shopping cart.",
+  "@addedToCartMessage": {
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "continueShopping": "Continue Shopping",
+  "addToCartFailed": "Unable to add to cart: {error}",
+  "@addToCartFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "favoritesLoadFailed": "Failed to load favorites:\n{error}",
+  "@favoritesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "noFavorites": "No favorites yet",
+  "noFavoritesHint": "Tap the heart on a product to save it here.",
+  "noMatchingFavorites": "No matching favorite products found.",
+  "removedFromCart": "{productName}\nQuantity: {quantity}\nRemoved from cart successfully!",
+  "@removedFromCart": {
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "removeItemFailed": "Failed to remove item: {error}",
+  "@removeItemFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "removeItemTitle": "Remove Item?",
+  "removeItemMessage": "Are you sure you want to remove this product?\n\n{productName}\nQuantity: {quantity}",
+  "@removeItemMessage": {
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "remove": "Remove",
+  "keepItem": "Keep Item",
+  "updateFailed": "Update failed: {error}",
+  "@updateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "checkoutFailed": "Checkout failed: {error}",
+  "@checkoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "cartProductsLoadFailed": "Some cart products could not be loaded.",
+  "processingOrder": "Processing Order...",
+  "checkout": "Checkout",
+  "emptyCart": "Your cart is empty",
+  "emptyCartHint": "Add some products to get started",
+  "orderPlacedTitle": "Order Placed Successfully!",
+  "orderPlacedMessage": "Thank you for shopping with Shoply!\nYour order is saved in Order History.",
+  "orderHistory": "Order History",
+  "ordersLoadFailed": "Failed to load orders:\n{error}",
+  "@ordersLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "noOrders": "No orders yet",
+  "noOrdersHint": "Your previous orders will appear here.",
+  "processingDate": "Processing date",
+  "orderNumber": "Order #{id}",
+  "@orderNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "orderStatus": "{status, select, placed{Placed} pending{Pending} processing{Processing} shipped{Shipped} delivered{Delivered} cancelled{Cancelled} other{{status}}}",
+  "@orderStatus": {
+    "description": "Order status stored in Firestore; unknown values are shown as stored.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotLoadAccount": "Could not load account: {error}",
+  "@couldNotLoadAccount": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "numberOfOrders": "Number of Orders",
+  "editAccountInformation": "Edit Account Information",
+  "saveChanges": "Save Changes",
+  "preferences": "Preferences",
+  "accountSecurity": "Account Security",
+  "emailAddress": "Email Address",
+  "changePassword": "Change Password",
+  "passwordUpdatedTitle": "Password Updated!",
+  "passwordUpdatedMessage": "Your password has been changed successfully.\n\nYour account is now secured with your new password.",
+  "couldNotLoadProfile": "Could not load profile: {error}",
+  "@couldNotLoadProfile": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "imageSelectionFailed": "Image selection failed: {error}",
+  "@imageSelectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "accountUpdated": "Account updated successfully!",
+  "saveFailed": "Save failed: {error}",
+  "@saveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "currentEmailAlready": "This is your current email",
+  "verificationEmailSent": "Verification sent. Check the new email, then sign in again.",
+  "emailChangeFailed": "Email change failed: {error}",
+  "@emailChangeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "resetEmailSentTo": "Password reset email sent to {email}",
+  "@resetEmailSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotSendResetLink": "Could not send reset link: {error}",
+  "@couldNotSendResetLink": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "language": "Language",
+  "appearance": "Appearance",
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "systemDefault": "System Default",
+  "systemDefaultHint": "Follows your device settings",
+  "updatePasswordSubtitle": "Update your password securely.",
+  "currentPassword": "Current Password",
+  "enterCurrentPassword": "Enter your current password",
+  "newPassword": "New Password",
+  "useAtLeast8Characters": "Use at least 8 characters",
+  "chooseDifferentPassword": "Choose a different password",
+  "confirmNewPassword": "Confirm New Password",
+  "update": "Update",
+  "currentPasswordIncorrect": "Your current password is incorrect.",
+  "chooseStrongerPassword": "Please choose a stronger password.",
+  "signInAgainAndRetry": "Please sign in again and retry.",
+  "unableToUpdatePassword": "Unable to update password.",
+  "noEmailOnAccount": "This account does not have an email address.",
+  "aboutTagline": "Your Everyday Shopping Companion",
+  "aboutTheApplication": "About the Application",
+  "aboutParagraph1": "Shoply is a modern e-commerce mobile application designed to make online shopping simple, convenient, and enjoyable. It provides an organized shopping experience where users can explore products across different categories, discover trending items, and view detailed product information.",
+  "aboutParagraph2": "With Shoply, customers can save their favorite products, manage their shopping cart, adjust product quantities, review their order history, and personalize their account information.",
+  "featureExploreCategories": "Explore Product Categories",
+  "featureSaveFavorites": "Save Favorite Products",
+  "featureManageCart": "Manage Shopping Cart",
+  "featureReviewOrders": "Review Order History",
+  "featurePersonalizeAccount": "Personalize Your Account",
+  "version": "Version {version}",
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -13,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return SizedBox(
       height: 62,
       width: double.infinity,
@@ -22,7 +22,7 @@ class CustomButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(18),
           ),
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: cs.primary,
         ),
         child: Text(
           buttonText,
@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
               style ??
               TextStyle(
                 fontSize: 30,
-                color: AppColors.onPrimary,
+                color: cs.onPrimary,
                 fontWeight: FontWeight.w700,
               ),
         ),

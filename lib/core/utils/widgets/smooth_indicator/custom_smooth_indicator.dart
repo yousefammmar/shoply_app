@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CustomSmoothIndicator extends StatelessWidget {
@@ -14,6 +13,7 @@ class CustomSmoothIndicator extends StatelessWidget {
   final IndicatorEffect? effect;
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
     return SmoothPageIndicator(
       controller: pageController,
       count: count,
@@ -25,8 +25,8 @@ class CustomSmoothIndicator extends StatelessWidget {
             dotWidth: 16.0,
             dotHeight: 16.0,
             strokeWidth: 1.5,
-            dotColor: AppColors.primaryColor.withValues(alpha: 0.3),
-            activeDotColor: AppColors.primaryColor,
+            dotColor: primary.withValues(alpha: 0.3),
+            activeDotColor: primary,
           ),
     );
   }

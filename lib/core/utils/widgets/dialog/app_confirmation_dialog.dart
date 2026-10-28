@@ -1,12 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class AppConfirmationDialog extends StatelessWidget {
   final String title;
   final String message;
-  final String confirmText;
-  final String cancelText;
+  // Null values fall back to the localized Confirm / Cancel.
+  final String? confirmText;
+  final String? cancelText;
   final IconData icon;
   final bool isDangerous;
 
@@ -14,20 +16,18 @@ class AppConfirmationDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.message,
-    this.confirmText = 'Confirm',
-    this.cancelText = 'Cancel',
+    this.confirmText,
+    this.cancelText,
     this.icon = Icons.help_outline_rounded,
     this.isDangerous = false,
   });
-
-  static const Color primaryColor = Color(0xFF07583F);
 
   static Future<bool> show({
     required BuildContext context,
     required String title,
     required String message,
-    String confirmText = 'Confirm',
-    String cancelText = 'Cancel',
+    String? confirmText,
+    String? cancelText,
     IconData icon = Icons.help_outline_rounded,
     bool isDangerous = false,
   }) async {
@@ -52,11 +52,12 @@ class AppConfirmationDialog extends StatelessWidget {
     final reduceMotion =
         MediaQuery.disableAnimationsOf(context);
 
-    final actionColor =
-        isDangerous ? const Color(0xFFE53935) : primaryColor;
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
+    final actionColor = isDangerous ? cs.error : cs.primary;
+    final onActionColor = isDangerous ? cs.onError : cs.onPrimary;
 
     Widget content = Dialog(
-      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
@@ -92,10 +93,10 @@ class AppConfirmationDialog extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 height: 1.6,
-                color: Colors.black54,
+                color: cs.onSurfaceVariant,
               ),
             ),
 
@@ -109,12 +110,12 @@ class AppConfirmationDialog extends StatelessWidget {
                       Navigator.of(context).pop(false);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: primaryColor,
+                      foregroundColor: cs.primary,
                       padding: const EdgeInsets.symmetric(
                         vertical: 13,
                       ),
                     ),
-                    child: Text(cancelText),
+                    child: Text(cancelText ?? l10n.cancel),
                   ),
                 ),
 
@@ -127,12 +128,12 @@ class AppConfirmationDialog extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: actionColor,
-                      foregroundColor: Colors.white,
+                      foregroundColor: onActionColor,
                       padding: const EdgeInsets.symmetric(
                         vertical: 13,
                       ),
                     ),
-                    child: Text(confirmText),
+                    child: Text(confirmText ?? l10n.confirm),
                   ),
                 ),
               ],

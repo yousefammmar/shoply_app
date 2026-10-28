@@ -6,40 +6,35 @@ class _LoginBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<LoginCubit>();
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
+    final iconColor = cs.onSurface.withValues(alpha: 0.75);
 
     return Column(
       children: [
         CustomTextField(
           validator: (email) {
             if (email?.isEmpty ?? false) {
-              return 'Email is required';
+              return l10n.emailRequired;
             }
             return null;
           },
           controller: cubit.emailController,
-          hinText: 'Email',
-          prefixIcon: Icon(
-            Icons.email_outlined,
-            size: 28,
-            color: Colors.grey.shade800,
-          ),
+          hinText: l10n.email,
+          prefixIcon: Icon(Icons.email_outlined, size: 28, color: iconColor),
         ),
         SizedBox(height: 30),
         CustomTextField(
           validator: (password) {
             if (password?.isEmpty ?? false) {
-              return 'Password is required';
+              return l10n.passwordRequired;
             }
             return null;
           },
           obscureText: true,
           controller: cubit.passwordController,
-          hinText: 'Password',
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            size: 28,
-            color: Colors.grey.shade800,
-          ),
+          hinText: l10n.password,
+          prefixIcon: Icon(Icons.lock_outline, size: 28, color: iconColor),
         ),
         SizedBox(height: 20),
         GestureDetector(
@@ -47,13 +42,13 @@ class _LoginBody extends StatelessWidget {
             Navigator.pushNamed(context, AppPages.forgotPasswordScreen);
           },
           child: Align(
-            alignment: AlignmentGeometry.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(
-              'ForgotPassword?',
+              l10n.forgotPassword,
               style: TextStyle(
                 fontSize: 19,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
+                color: cs.primary,
               ),
             ),
           ),

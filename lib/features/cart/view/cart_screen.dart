@@ -8,6 +8,7 @@ import 'package:shoply_app/features/cart/view/widgets/checkout_success_dialog.da
 import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/core/utils/widgets/dialog/app_confirmation_dialog.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -28,7 +29,6 @@ class _CartBody extends StatefulWidget {
 }
 
 class _CartBodyState extends State<_CartBody> {
-  static const green = Color(0xFF07583F);
   bool _checkingOut = false;
   final Set<String> _busy = {};
   Future<void> _removeProduct(
@@ -45,9 +45,7 @@ class _CartBodyState extends State<_CartBody> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${product.name}\n'
-            'Quantity: $quantity\n'
-            'Removed from cart successfully!',
+            context.l10n.removedFromCart(product.name, quantity),
           ),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 4),
@@ -58,16 +56,18 @@ class _CartBodyState extends State<_CartBody> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to remove item: $error'),
-          backgroundColor: Colors.red,
+          content: Text(context.l10n.removeItemFailed(error)),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
   }
-  void _message(String value, {bool error = false}) {
+  // Messages are built lazily so the context is only read while mounted.
+  void _message(String Function(AppLocalizations l10n) value, {bool error = false}) {
     if (!mounted) return;
+    final cs = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(value), backgroundColor: error ? Colors.red : green,
+      content: Text(value(context.l10n)), backgroundColor: error ? cs.error : cs.primary,
       behavior: SnackBarBehavior.floating,
     ));
   }
@@ -77,13 +77,10 @@ class _CartBodyState extends State<_CartBody> {
     ) async {
       final confirmed = await AppConfirmationDialog.show(
         context: context,
-        title: 'Remove Item?',
-        message:
-            'Are you sure you want to remove this product?\n\n'
-            '${product.name}\n'
-            'Quantity: $quantity',
-        confirmText: 'Remove',
-        cancelText: 'Keep Item',
+        title: context.l10n.removeItemTitle,
+        message: context.l10n.removeItemMessage(product.name, quantity),
+        confirmText: context.l10n.remove,
+        cancelText: context.l10n.keepItem,
         icon: Icons.delete_outline_rounded,
         isDangerous: true,
       );
@@ -98,7 +95,7 @@ class _CartBodyState extends State<_CartBody> {
     try {
       await context.read<CartCubit>().updateQuantity(id, value);
       HapticFeedback.selectionClick();
-    } catch (e) { _message('Update failed: $e', error: true); }
+    } catch (e) { _message((l10n) => l10n.updateFailed(e), error: true); }
     finally { if (mounted) setState(() => _busy.remove(id)); }
   }
 
@@ -116,18 +113,22 @@ class _CartBodyState extends State<_CartBody> {
         barrierDismissible: false,
         builder: (_) => const CheckoutSuccessDialog(),
       );
-    } catch (e) { _message('Checkout failed: $e', error: true); }
+    } catch (e) { _message((l10n) => l10n.checkoutFailed(e), error: true); }
     finally { if (mounted) setState(() => _checkingOut = false); }
   }
 
   @override
   Widget build(BuildContext context) {
     final reduced = MediaQuery.disableAnimationsOf(context);
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     return BlocBuilder<CartCubit, CartState>(builder: (context, cartState) {
       if (cartState is CartInitial || cartState is CartLoading) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (cartState is CartError) return Center(child: Text(cartState.message));
+      if (cartState is CartError) {
+        return Center(child: Text(l10n.errorWithDetails(cartState.message), textAlign: TextAlign.center));
+      }
       if (cartState is! CartSuccess) return const SizedBox.shrink();
       final items = cartState.cartItems;
       if (items.isEmpty) return const _EmptyCart();
@@ -136,11 +137,13 @@ class _CartBodyState extends State<_CartBody> {
         if (state is ProductsInitial || state is ProductsLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is ProductsError) return Center(child: Text(state.message));
+        if (state is ProductsError) {
+          return Center(child: Text(l10n.errorWithDetails(state.message), textAlign: TextAlign.center));
+        }
         if (state is! ProductsSuccess) return const SizedBox.shrink();
         final products = state.products.where((p) => items.containsKey(p.id)).toList();
         if (products.length != items.length) {
-          return const Center(child: Text('Some cart products could not be loaded.'));
+          return Center(child: Text(l10n.cartProductsLoadFailed));
         }
         final total = products.fold<double>(0, (s, p) => s + p.price * items[p.id]!);
 
@@ -170,10 +173,10 @@ class _CartBodyState extends State<_CartBody> {
                   return false;
                 },
                 background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 24),
-                  decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(16)),
-                  child: const Icon(Icons.delete_outline, color: Colors.white, size: 29),
+                  alignment: AlignmentDirectional.centerEnd,
+                  padding: const EdgeInsetsDirectional.only(end: 24),
+                  decoration: BoxDecoration(color: cs.error, borderRadius: BorderRadius.circular(16)),
+                  child: Icon(Icons.delete_outline, color: cs.onError, size: 29),
                 ),
                 child: _CartProductCard(
                   product: product,
@@ -191,31 +194,31 @@ class _CartBodyState extends State<_CartBody> {
           )),
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey.shade200))),
+            decoration: BoxDecoration(color: cs.surface,
+              border: Border(top: BorderSide(color: cs.outlineVariant))),
             child: SafeArea(top: false, child: Column(mainAxisSize: MainAxisSize.min, children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text('Total', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text(l10n.total, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                 AnimatedSwitcher(
                   duration: reduced ? Duration.zero : const Duration(milliseconds: 250),
                   transitionBuilder: (child, a) => FadeTransition(opacity: a, child: ScaleTransition(scale: a, child: child)),
                   child: Text('\$${total.toStringAsFixed(2)}', key: ValueKey(total.toStringAsFixed(2)),
-                    style: const TextStyle(color: green, fontSize: 22, fontWeight: FontWeight.bold)),
+                    style: TextStyle(color: cs.primary, fontSize: 22, fontWeight: FontWeight.bold)),
                 ),
               ]),
               const SizedBox(height: 16),
               SizedBox(width: double.infinity, height: 52, child: ElevatedButton(
                 onPressed: _checkingOut || _busy.isNotEmpty ? null : () => _checkout(products),
-                style: ElevatedButton.styleFrom(backgroundColor: green, foregroundColor: Colors.white,
+                style: ElevatedButton.styleFrom(backgroundColor: cs.primary, foregroundColor: cs.onPrimary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
                 child: AnimatedSwitcher(
                   duration: reduced ? Duration.zero : const Duration(milliseconds: 210),
                   child: _checkingOut
-                      ? const Row(key: ValueKey('progress'), mainAxisSize: MainAxisSize.min, children: [
-                          SizedBox(height: 19, width: 19, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)),
-                          SizedBox(width: 12), Text('Processing Order...'),
+                      ? Row(key: const ValueKey('progress'), mainAxisSize: MainAxisSize.min, children: [
+                          SizedBox(height: 19, width: 19, child: CircularProgressIndicator(strokeWidth: 2, color: cs.onPrimary)),
+                          const SizedBox(width: 12), Text(l10n.processingOrder),
                         ])
-                      : const Text('Checkout', key: ValueKey('checkout'), style: TextStyle(fontSize: 17)),
+                      : Text(l10n.checkout, key: const ValueKey('checkout'), style: const TextStyle(fontSize: 17)),
                 ),
               )),
             ])),
@@ -239,11 +242,12 @@ class _CartProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduced = MediaQuery.disableAnimationsOf(context);
+    final cs = Theme.of(context).colorScheme;
     final image = product.images.isEmpty ? null : product.images.first;
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200)),
+      decoration: BoxDecoration(color: cs.surface, borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.outlineVariant)),
       child: Row(children: [
         ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(
           width: 95, height: 95,
@@ -257,7 +261,7 @@ class _CartProductCard extends StatelessWidget {
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           const SizedBox(height: 5),
           Text('\$${product.price.toStringAsFixed(2)}',
-            style: const TextStyle(fontSize: 16, color: Color(0xFF07583F), fontWeight: FontWeight.bold)),
+            style: TextStyle(fontSize: 16, color: cs.primary, fontWeight: FontWeight.bold)),
           const SizedBox(height: 9),
           Row(children: [
             IconButton(onPressed: busy ? null : onMinus,
@@ -272,7 +276,7 @@ class _CartProductCard extends StatelessWidget {
             const Spacer(),
             IconButton(onPressed: busy ? null : onDelete,
               visualDensity: VisualDensity.compact,
-              icon: const Icon(Icons.delete_outline, color: Colors.red)),
+              icon: Icon(Icons.delete_outline, color: cs.error)),
           ]),
         ])),
       ]),
@@ -284,12 +288,13 @@ class _EmptyCart extends StatelessWidget {
   const _EmptyCart();
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final content = Column(mainAxisSize: MainAxisSize.min, children: [
-      const Icon(Icons.shopping_cart_outlined, color: Color(0xFF07583F), size: 75),
+      Icon(Icons.shopping_cart_outlined, color: cs.primary, size: 75),
       const SizedBox(height: 15),
-      const Text('Your cart is empty', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      Text(context.l10n.emptyCart, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       const SizedBox(height: 7),
-      const Text('Add some products to get started', style: TextStyle(color: Colors.grey)),
+      Text(context.l10n.emptyCartHint, style: TextStyle(color: cs.onSurfaceVariant)),
     ]);
     return Center(child: MediaQuery.disableAnimationsOf(context) ? content
         : AnimatedScale(scale: 1, duration: const Duration(milliseconds: 350), child: content));

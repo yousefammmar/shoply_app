@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shoply_app/core/helper/error_handle_helper.dart';
 import 'package:shoply_app/core/routes/app_pages.dart';
 import 'package:shoply_app/core/utils/images/app_images.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
 import 'package:shoply_app/core/utils/widgets/button/custom_button.dart';
 import 'package:shoply_app/core/utils/widgets/dialog/custom_dialog_error.dart';
 import 'package:shoply_app/core/utils/widgets/loading/custom_loading.dart';
@@ -10,6 +10,7 @@ import 'package:shoply_app/core/utils/widgets/text_button/custom_text_button_wra
 import 'package:shoply_app/core/utils/widgets/textfield/custom_text_field.dart';
 import 'package:shoply_app/features/login/view_model/cubit.dart';
 import 'package:shoply_app/features/login/view_model/state.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 part 'widgets/login_header.dart';
 part 'widgets/login_body.dart';
 part 'widgets/login_bottom.dart';
@@ -30,8 +31,11 @@ class LoginScreen extends StatelessWidget {
               Navigator.pop(context);
               CustomDialogError.showProDialogError(
                 context: context,
-                title: 'Login Error',
-                description: state.errorMessage,
+                title: context.l10n.loginError,
+                description: ErrorHandleHelper.getCustomErrorMessage(
+                  context.l10n,
+                  state.errorMessage,
+                ),
                 onPressed: () {
                   Navigator.pop(context);
                 },

@@ -6,6 +6,7 @@ import 'package:shoply_app/core/utils/widgets/smooth_indicator/custom_smooth_ind
 import 'package:shoply_app/core/utils/widgets/text_button/custom_text_button.dart';
 import 'package:shoply_app/features/onboarding/view_model/cubit.dart';
 import 'package:shoply_app/features/onboarding/view_model/state.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 part 'widgets/on_boarding_header.dart';
 part 'widgets/on_boarding_bottom.dart';
 

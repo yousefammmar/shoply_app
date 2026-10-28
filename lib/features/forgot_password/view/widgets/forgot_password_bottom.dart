@@ -6,28 +6,30 @@ class _ForgotPasswordBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<ForgotPassswordCubit>();
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         CustomTextField(
           validator: (email) {
             if (email?.isEmpty ?? false) {
-              return 'Email is required';
+              return l10n.emailRequired;
             } else if (AppRegex.emailRegex.hasMatch(email ?? '') == false) {
-              return 'Email is not valid';
+              return l10n.emailInvalid;
             }
             return null;
           },
           controller: cubit.emailController,
-          hinText: 'Email',
+          hinText: l10n.email,
           prefixIcon: Icon(
             Icons.email_outlined,
             size: 28,
-            color: Colors.grey.shade800,
+            color: cs.onSurface.withValues(alpha: 0.75),
           ),
         ),
         SizedBox(height: 35),
         CustomButton(
-          buttonText: 'Send Reset Link',
+          buttonText: l10n.sendResetLink,
           onPressed: () {
             cubit.forgotPassword();
           },
@@ -41,11 +43,11 @@ class _ForgotPasswordBottom extends StatelessWidget {
               (route) => false,
             );
           },
-          textButton: 'Back to Login',
+          textButton: l10n.backToLogin,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: cs.onSurface,
           ),
         ),
       ],

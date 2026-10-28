@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class AppDrawer extends StatelessWidget {
   final VoidCallback onLogout;
@@ -22,42 +23,45 @@ class AppDrawer extends StatelessWidget {
     this.onAbout,
   });
 
-  static const Color primaryColor = Color(0xFF07583F);
-
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
+    // Items slide in from the side the drawer opens on.
+    final slideSign =
+        Directionality.of(context) == TextDirection.rtl ? 1.0 : -1.0;
 
     final items = [
       _DrawerItem(
-        'My Profile',
+        l10n.myProfile,
         Icons.person_outline,
         onProfile,
       ),
       _DrawerItem(
-        'My Orders',
+        l10n.myOrders,
         Icons.inventory_2_outlined,
         onOrders,
       ),
       _DrawerItem(
-        'Favorites',
+        l10n.favorites,
         Icons.favorite_border,
         onFavorites,
       ),
       _DrawerItem(
-        'Settings',
+        l10n.settings,
         Icons.settings_outlined,
         onSettings,
       ),
       _DrawerItem(
-        'About Shoply',
+        l10n.aboutShoply,
         Icons.info_outline,
         onAbout,
       ),
     ];
 
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: cs.surface,
       child: SafeArea(
         child: Column(
           children: [
@@ -87,20 +91,20 @@ class AppDrawer extends StatelessWidget {
                 return Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
-                  color: primaryColor,
+                  color: cs.primary,
                   child: Row(
                     children: [
                       CircleAvatar(
                         radius: 28,
-                        backgroundColor: Colors.white,
+                        backgroundColor: cs.surface,
                         backgroundImage: image.isNotEmpty
                             ? NetworkImage(image)
                             : null,
                         child: image.isEmpty
-                            ? const Icon(
+                            ? Icon(
                                 Icons.person,
                                 size: 32,
-                                color: primaryColor,
+                                color: cs.primary,
                               )
                             : null,
                       ),
@@ -116,11 +120,11 @@ class AppDrawer extends StatelessWidget {
                               name.isNotEmpty
                                   ? name
                                   : user?.displayName ??
-                                      'Shoply User',
+                                      l10n.shoplyUser,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: cs.onPrimary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -134,8 +138,8 @@ class AppDrawer extends StatelessWidget {
                                   : user?.email ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              style: TextStyle(
+                                color: cs.onPrimary.withValues(alpha: 0.7),
                                 fontSize: 12,
                               ),
                             ),
@@ -147,7 +151,7 @@ class AppDrawer extends StatelessWidget {
                 )
                     .animate()
                     .fadeIn(duration: 400.ms)
-                    .slideX(begin: -0.15, end: 0);
+                    .slideX(begin: 0.15 * slideSign, end: 0);
               },
             ),
 
@@ -168,7 +172,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     leading: Icon(
                       item.icon,
-                      color: primaryColor,
+                      color: cs.primary,
                     ),
                     title: Text(
                       item.title,
@@ -176,9 +180,9 @@ class AppDrawer extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    trailing: const Icon(
+                    trailing: Icon(
                       Icons.chevron_right,
-                      color: Colors.grey,
+                      color: cs.onSurfaceVariant,
                     ),
                     onTap: item.onTap == null
                         ? null
@@ -195,7 +199,7 @@ class AppDrawer extends StatelessWidget {
                         duration: 350.ms,
                       )
                       .slideX(
-                        begin: -0.12,
+                        begin: 0.12 * slideSign,
                         end: 0,
                         duration: 350.ms,
                         curve: Curves.easeOutCubic,
@@ -213,14 +217,14 @@ class AppDrawer extends StatelessWidget {
                 horizontal: 22,
                 vertical: 12,
               ),
-              leading: const Icon(
+              leading: Icon(
                 Icons.logout_rounded,
-                color: Colors.red,
+                color: cs.error,
               ),
-              title: const Text(
-                'Logout',
+              title: Text(
+                l10n.logout,
                 style: TextStyle(
-                  color: Colors.red,
+                  color: cs.error,
                   fontWeight: FontWeight.bold,
                 ),
               ),

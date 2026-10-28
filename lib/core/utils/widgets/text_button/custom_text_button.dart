@@ -21,7 +21,7 @@ class CustomTextButton extends StatelessWidget {
             TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
       ),
     );

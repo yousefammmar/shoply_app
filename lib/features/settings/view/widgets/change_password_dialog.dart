@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -12,8 +13,6 @@ class ChangePasswordDialog extends StatefulWidget {
 
 class _ChangePasswordDialogState
     extends State<ChangePasswordDialog> {
-  static const Color green = Color(0xFF07583F);
-
   final _formKey = GlobalKey<FormState>();
 
   final _currentPassword = TextEditingController();
@@ -34,25 +33,26 @@ class _ChangePasswordDialogState
   }
 
   String _errorMessage(FirebaseAuthException error) {
+    final l10n = context.l10n;
     switch (error.code) {
       case 'wrong-password':
       case 'invalid-credential':
-        return 'Your current password is incorrect.';
+        return l10n.currentPasswordIncorrect;
 
       case 'weak-password':
-        return 'Please choose a stronger password.';
+        return l10n.chooseStrongerPassword;
 
       case 'requires-recent-login':
-        return 'Please sign in again and retry.';
+        return l10n.signInAgainAndRetry;
 
       case 'too-many-requests':
-        return 'Too many attempts. Please try again later.';
+        return l10n.authErrorTooManyRequests;
 
       case 'network-request-failed':
-        return 'Please check your internet connection.';
+        return l10n.authErrorNetwork;
 
       default:
-        return error.message ?? 'Unable to update password.';
+        return l10n.unableToUpdatePassword;
     }
   }
 
@@ -66,7 +66,7 @@ class _ChangePasswordDialogState
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      _showMessage('Please log in first.', isError: true);
+      _showMessage(context.l10n.pleaseLogIn, isError: true);
       return;
     }
 
@@ -74,7 +74,7 @@ class _ChangePasswordDialogState
 
     if (email == null || email.isEmpty) {
       _showMessage(
-        'This account does not have an email address.',
+        context.l10n.noEmailOnAccount,
         isError: true,
       );
       return;
@@ -102,13 +102,15 @@ class _ChangePasswordDialogState
 
       Navigator.of(context).pop(true);
     } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
       _showMessage(
         _errorMessage(error),
         isError: true,
       );
     } catch (_) {
+      if (!mounted) return;
       _showMessage(
-        'Something went wrong. Please try again.',
+        context.l10n.authErrorUnexpected,
         isError: true,
       );
     } finally {
@@ -123,11 +125,12 @@ class _ChangePasswordDialogState
     bool isError = false,
   }) {
     if (!mounted) return;
+    final cs = Theme.of(context).colorScheme;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : green,
+        backgroundColor: isError ? cs.error : cs.primary,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -140,6 +143,7 @@ class _ChangePasswordDialogState
     required VoidCallback onToggle,
     required String? Function(String?) validator,
   }) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextFormField(
@@ -150,9 +154,9 @@ class _ChangePasswordDialogState
         validator: validator,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             Icons.lock_outline,
-            color: green,
+            color: cs.primary,
           ),
           suffixIcon: IconButton(
             onPressed: onToggle,
@@ -163,14 +167,14 @@ class _ChangePasswordDialogState
             ),
           ),
           filled: true,
-          fillColor: const Color(0xFFF7F9F8),
+          fillColor: cs.surfaceContainerLow,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: green,
+            borderSide: BorderSide(
+              color: cs.primary,
               width: 2,
             ),
           ),
@@ -181,8 +185,9 @@ class _ChangePasswordDialogState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     return Dialog(
-      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
@@ -199,21 +204,21 @@ class _ChangePasswordDialogState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 36,
-                backgroundColor: Color(0xFFE7F4EE),
+                backgroundColor: cs.primaryContainer,
                 child: Icon(
                   Icons.lock_reset_rounded,
                   size: 37,
-                  color: green,
+                  color: cs.primary,
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              const Text(
-                'Change Password',
-                style: TextStyle(
+              Text(
+                l10n.changePassword,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -221,18 +226,18 @@ class _ChangePasswordDialogState
 
               const SizedBox(height: 8),
 
-              const Text(
-                'Update your password securely.',
+              Text(
+                l10n.updatePasswordSubtitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.black54,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
 
               const SizedBox(height: 24),
 
               _passwordField(
-                label: 'Current Password',
+                label: l10n.currentPassword,
                 controller: _currentPassword,
                 visible: _showCurrent,
                 onToggle: () {
@@ -242,14 +247,14 @@ class _ChangePasswordDialogState
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter your current password';
+                    return l10n.enterCurrentPassword;
                   }
                   return null;
                 },
               ),
 
               _passwordField(
-                label: 'New Password',
+                label: l10n.newPassword,
                 controller: _newPassword,
                 visible: _showNew,
                 onToggle: () {
@@ -259,17 +264,17 @@ class _ChangePasswordDialogState
                 },
                 validator: (value) {
                   if (value == null || value.length < 8) {
-                    return 'Use at least 8 characters';
+                    return l10n.useAtLeast8Characters;
                   }
                   if (value == _currentPassword.text) {
-                    return 'Choose a different password';
+                    return l10n.chooseDifferentPassword;
                   }
                   return null;
                 },
               ),
 
               _passwordField(
-                label: 'Confirm New Password',
+                label: l10n.confirmNewPassword,
                 controller: _confirmPassword,
                 visible: _showConfirm,
                 onToggle: () {
@@ -279,7 +284,7 @@ class _ChangePasswordDialogState
                 },
                 validator: (value) {
                   if (value != _newPassword.text) {
-                    return 'Passwords do not match';
+                    return l10n.passwordsDoNotMatch;
                   }
                   return null;
                 },
@@ -294,7 +299,7 @@ class _ChangePasswordDialogState
                       onPressed: _loading
                           ? null
                           : () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: Text(l10n.cancel),
                     ),
                   ),
 
@@ -305,19 +310,19 @@ class _ChangePasswordDialogState
                       onPressed:
                           _loading ? null : _updatePassword,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: green,
-                        foregroundColor: Colors.white,
+                        backgroundColor: cs.primary,
+                        foregroundColor: cs.onPrimary,
                       ),
                       child: _loading
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: cs.onPrimary,
                               ),
                             )
-                          : const Text('Update'),
+                          : Text(l10n.update),
                     ),
                   ),
                 ],

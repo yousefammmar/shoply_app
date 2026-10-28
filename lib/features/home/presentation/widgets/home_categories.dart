@@ -7,13 +7,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shoply_app/core/utils/images/app_images.dart';
 import 'package:shoply_app/features/products/view/category_products_screen.dart';
 import 'package:shoply_app/features/favorites/view_model/favorites_cubit.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class HomeCategories extends StatelessWidget {
   const HomeCategories({super.key});
 
-  static const Color primaryColor = Color(0xFF07583F);
-
-  // Category IDs must match Firestore.
+  // Category IDs must match Firestore; names come from l10n.categoryName.
   static const categories = [
     (id: 'clothes', name: 'Tops', image: AppImages.categoryClothes),
     (id: 'bags', name: 'Bags', image: AppImages.categoryBags),
@@ -25,15 +24,18 @@ class HomeCategories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    // Entrance and page slides come from the reading-direction end.
+    final slideSign =
+        Directionality.of(context) == TextDirection.rtl ? -1.0 : 1.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'Categories',
-            style: TextStyle(
+            context.l10n.categories,
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
@@ -53,10 +55,14 @@ class HomeCategories extends StatelessWidget {
                 const SizedBox(width: 14),
             itemBuilder: (context, index) {
               final category = categories[index];
+              final categoryName = context.l10n.categoryName(
+                category.id,
+                category.name,
+              );
 
               Widget card = _AnimatedCategoryCard(
                 key: ValueKey(category.id),
-                title: category.name,
+                title: categoryName,
                 imageUrl: category.image,
                 onTap: () {
                   final favoritesCubit =
@@ -78,7 +84,7 @@ class HomeCategories extends StatelessWidget {
                           value: favoritesCubit,
                           child: CategoryProductsScreen(
                             categoryId: category.id,
-                            categoryName: category.name,
+                            categoryName: categoryName,
                           ),
                         );
                       },
@@ -97,7 +103,7 @@ class HomeCategories extends StatelessWidget {
                           ),
                           child: SlideTransition(
                             position: Tween<Offset>(
-                              begin: const Offset(0.06, 0),
+                              begin: Offset(0.06 * slideSign, 0),
                               end: Offset.zero,
                             ).animate(
                               CurvedAnimation(
@@ -122,7 +128,7 @@ class HomeCategories extends StatelessWidget {
                       duration: 380.ms,
                     )
                     .slideX(
-                      begin: 0.12,
+                      begin: 0.12 * slideSign,
                       end: 0,
                       delay: Duration(milliseconds: index * 65),
                       duration: 450.ms,
@@ -162,6 +168,7 @@ class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard> {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final cs = Theme.of(context).colorScheme;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -206,7 +213,7 @@ class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard> {
                         final placeholder = Container(
                           width: 130,
                           height: 130,
-                          color: const Color(0xFFE7F4EE),
+                          color: cs.primaryContainer,
                         );
 
                         if (reduceMotion) return placeholder;
@@ -218,34 +225,39 @@ class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard> {
                             )
                             .shimmer(
                               duration: 1300.ms,
-                              color: Colors.white54,
+                              color: cs.surface.withValues(alpha: 0.54),
                             );
                       },
                       errorBuilder: (context, error, stackTrace) {
-                        return const SizedBox(
+                        return SizedBox(
                           width: 130,
                           height: 130,
                           child: Icon(
                             Icons.broken_image_outlined,
-                            color: Colors.grey,
+                            color: cs.onSurfaceVariant,
                           ),
                         );
                       },
                     ),
 
-                    Positioned(
+                    PositionedDirectional(
                       top: 9,
-                      right: 9,
+                      end: 9,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.88),
+                          color: cs.surface.withValues(alpha: 0.88),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.arrow_outward_rounded,
-                          size: 15,
-                          color: Color(0xFF07583F),
+                        // The diagonal arrow points toward the reading end.
+                        child: Transform.flip(
+                          flipX: Directionality.of(context) ==
+                              TextDirection.rtl,
+                          child: Icon(
+                            Icons.arrow_outward_rounded,
+                            size: 15,
+                            color: cs.primary,
+                          ),
                         ),
                       ),
                     ),

@@ -9,15 +9,15 @@ class _LoginBottom extends StatelessWidget {
     return Column(
       children: [
         CustomButton(
-          buttonText: 'Login',
+          buttonText: context.l10n.login,
           onPressed: () {
             cubit.login();
           },
         ),
         SizedBox(height: 50),
         CustomTextButtonWrap(
-          text: 'Don\'t have an account?',
-          textClick: ' Sign Up',
+          text: context.l10n.noAccount,
+          textClick: ' ${context.l10n.signUp}',
           onTap: () {
             Navigator.pushNamed(context, AppPages.signupScreen);
           },

@@ -5,14 +5,16 @@ class _SingupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         Text(
-          'Join us and start shopping',
+          context.l10n.joinUs,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade600,
+            color: cs.onSurfaceVariant,
           ),
         ),
         SizedBox(height: 20),
@@ -34,9 +36,9 @@ class _SingupHeader extends StatelessWidget {
                       ? NetworkImage(AppImages.profilePicture)
                       : FileImage(cubit.image!),
                 ),
-                Positioned(
+                PositionedDirectional(
                   bottom: 5,
-                  right: 5,
+                  end: 5,
                   child: GestureDetector(
                     onTap: () {
                       cubit.pickImage();
@@ -46,11 +48,11 @@ class _SingupHeader extends StatelessWidget {
                       width: 30,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primaryColor,
+                        color: cs.primary,
                       ),
                       child: Icon(
                         Icons.camera_alt_sharp,
-                        color: Colors.white,
+                        color: cs.onPrimary,
                         size: 20,
                       ),
                     ),
@@ -58,9 +60,9 @@ class _SingupHeader extends StatelessWidget {
                 ),
                 cubit.image == null || (cubit.image?.path.isEmpty ?? true)
                     ? SizedBox.shrink()
-                    : Positioned(
+                    : PositionedDirectional(
                         bottom: 5,
-                        left: 5,
+                        start: 5,
                         child: GestureDetector(
                           onTap: () {
                             cubit.deleteImage();
@@ -70,11 +72,11 @@ class _SingupHeader extends StatelessWidget {
                             width: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: AppColors.error,
+                              color: cs.error,
                             ),
                             child: Icon(
                               Icons.delete,
-                              color: Colors.white,
+                              color: cs.onError,
                               size: 20,
                             ),
                           ),

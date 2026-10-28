@@ -5,6 +5,7 @@ class _ForgotPasswordHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         Container(
@@ -12,26 +13,27 @@ class _ForgotPasswordHeader extends StatelessWidget {
           width: 150,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.primaryColor.withValues(alpha: 0.15),
+            color: cs.primary.withValues(alpha: 0.15),
           ),
-          child: Icon(Icons.lock, size: 70, color: AppColors.primaryColor),
+          child: Icon(Icons.lock, size: 70, color: cs.primary),
         ),
         SizedBox(height: 20),
         Text(
-          'Forgot Password?',
+          context.l10n.forgotPassword,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: cs.onSurface,
           ),
         ),
         SizedBox(height: 15),
         Text(
-          'Enter your email and we\'ll send\nyour rest link.',
+          context.l10n.forgotPasswordSubtitle,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade600,
+            color: cs.onSurfaceVariant,
           ),
           textAlign: TextAlign.center,
         ),

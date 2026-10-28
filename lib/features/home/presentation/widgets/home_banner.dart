@@ -13,8 +13,6 @@ class HomeBanner extends StatefulWidget {
 }
 
 class _HomeBannerState extends State<HomeBanner> {
-  static const Color primaryColor = Color(0xFF07583F);
-
   // Add new banner URLs here when available.
   static const List<String> banners = [
     AppImages.bannerShoe,
@@ -33,6 +31,7 @@ class _HomeBannerState extends State<HomeBanner> {
   Widget _buildBanner(String imageUrl) {
     final reduceMotion =
         MediaQuery.disableAnimationsOf(context);
+    final cs = Theme.of(context).colorScheme;
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
@@ -65,7 +64,7 @@ class _HomeBannerState extends State<HomeBanner> {
         final placeholder = Container(
           height: 190,
           decoration: BoxDecoration(
-            color: const Color(0xFFE7F4EE),
+            color: cs.primaryContainer,
             borderRadius: BorderRadius.circular(18),
           ),
         );
@@ -78,16 +77,16 @@ class _HomeBannerState extends State<HomeBanner> {
             )
             .shimmer(
               duration: 1400.ms,
-              color: Colors.white.withValues(alpha: 0.55),
+              color: cs.surface.withValues(alpha: 0.55),
             );
       },
       errorWidget: (context, url, error) {
-        return const SizedBox(
+        return SizedBox(
           height: 190,
           child: Center(
             child: Icon(
               Icons.broken_image_outlined,
-              color: primaryColor,
+              color: cs.primary,
               size: 45,
             ),
           ),
@@ -175,8 +174,8 @@ class _HomeBannerState extends State<HomeBanner> {
                   height: 7,
                   decoration: BoxDecoration(
                     color: selected
-                        ? primaryColor
-                        : Colors.grey.shade300,
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outlineVariant,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 );

@@ -14,6 +14,18 @@ class _OnBoardingHeader extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<OnBoardingCubit>();
+          final l10n = context.l10n;
+          final cs = Theme.of(context).colorScheme;
+          final titles = [
+            l10n.onboardingTitle1,
+            l10n.onboardingTitle2,
+            l10n.onboardingTitle3,
+          ];
+          final descriptions = [
+            l10n.onboardingDescription1,
+            l10n.onboardingDescription2,
+            l10n.onboardingDescription3,
+          ];
 
           return PageView.builder(
             controller: cubit.pageController,
@@ -53,11 +65,11 @@ class _OnBoardingHeader extends StatelessWidget {
                           error,
                           stackTrace,
                         ) {
-                          return const Center(
+                          return Center(
                             child: Icon(
                               Icons.broken_image,
                               size: 50,
-                              color: Colors.grey,
+                              color: cs.onSurfaceVariant,
                             ),
                           );
                         },
@@ -67,21 +79,21 @@ class _OnBoardingHeader extends StatelessWidget {
                     const SizedBox(height: 12),
 
                     Text(
-                      cubit.onBoardTitle[index],
+                      titles[index],
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: cs.onSurface,
                       ),
                     ),
 
                     const SizedBox(height: 8),
 
                     Text(
-                      cubit.onBoardDescreption[index],
+                      descriptions[index],
                       textAlign: TextAlign.center,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -89,7 +101,7 @@ class _OnBoardingHeader extends StatelessWidget {
                         fontSize: 16,
                         height: 1.4,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade600,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ],

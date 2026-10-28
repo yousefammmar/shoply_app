@@ -23,7 +23,9 @@ class _OnBoardingBottom extends StatelessWidget {
                 Column(
                   children: [
                     CustomButton(
-                      buttonText: cubit.index != 2 ? 'Next' : 'Get Started',
+                      buttonText: cubit.index != 2
+                          ? context.l10n.next
+                          : context.l10n.getStarted,
                       onPressed: cubit.index != 2
                           ? () {
                               cubit.nextPageController();
@@ -43,7 +45,7 @@ class _OnBoardingBottom extends StatelessWidget {
                         onTap: () {
                           cubit.skipOnBoard();
                         },
-                        textButton: 'Skip',
+                        textButton: context.l10n.skip,
                       ),
                   ],
                 ),

@@ -7,6 +7,7 @@ import 'package:shoply_app/features/home/home_view_model/home_cubit.dart';
 import 'package:shoply_app/features/home/presentation/widgets/home_banner.dart';
 import 'package:shoply_app/features/home/presentation/widgets/home_categories.dart';
 import 'package:shoply_app/features/home/presentation/widgets/trending_products.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const Color primaryColor = Color(0xFF07583F);
-
   bool _hasAnimated = false;
 
   @override
@@ -37,21 +36,22 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (state is HomeError) {
+          final cs = Theme.of(context).colorScheme;
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.wifi_off_rounded,
                     size: 58,
-                    color: primaryColor,
+                    color: cs.primary,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Something went wrong',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.somethingWentWrong,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -60,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     state.message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.grey,
+                    style: TextStyle(
+                      color: cs.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -70,10 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       context.read<HomeCubit>().loadProducts();
                     },
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Try Again'),
+                    label: Text(context.l10n.tryAgain),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: cs.primary,
+                      foregroundColor: cs.onPrimary,
                     ),
                   ),
                 ],
@@ -161,6 +161,7 @@ class _HomeLoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final reduceMotion =
         MediaQuery.disableAnimationsOf(context);
+    final cs = Theme.of(context).colorScheme;
 
     Widget skeleton({
       required double height,
@@ -171,7 +172,7 @@ class _HomeLoadingSkeleton extends StatelessWidget {
         height: height,
         width: width,
         decoration: BoxDecoration(
-          color: const Color(0xFFE8EEEB),
+          color: cs.surfaceContainerHigh,
           borderRadius:
               borderRadius ?? BorderRadius.circular(14),
         ),
@@ -185,7 +186,7 @@ class _HomeLoadingSkeleton extends StatelessWidget {
           )
           .shimmer(
             duration: 1350.ms,
-            color: Colors.white.withValues(alpha: 0.55),
+            color: cs.surface.withValues(alpha: 0.55),
           );
     }
 
