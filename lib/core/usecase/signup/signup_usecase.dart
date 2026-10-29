@@ -27,7 +27,7 @@ class SignupUsecase {
       final user = credential.user;
 
       if (user == null) {
-        return const Left('Failed to create user account');
+        return const Left('unknown');
       }
 
       // 2. Upload profile image to Supabase
@@ -61,22 +61,16 @@ class SignupUsecase {
       return const Right(true);
     } on FirebaseAuthException catch (e) {
       log('Firebase Auth Error: ${e.message}');
-      return Left(
-        e.message ?? 'Authentication failed',
-      );
+      return Left(e.code);
     } on StorageException catch (e) {
       log('Supabase Storage Error: ${e.message}');
-      return Left(
-        'Profile image upload failed: ${e.message}',
-      );
+      return const Left('image-upload-failed');
     } on FirebaseException catch (e) {
       log('Firebase Error: ${e.message}');
-      return Left(
-        e.message ?? 'Firebase operation failed',
-      );
+      return Left(e.code);
     } catch (e) {
       log('Signup Error: $e');
-      return Left('Sign up failed: $e');
+      return const Left('unknown');
     }
   }
 
@@ -114,7 +108,7 @@ class SignupUsecase {
       final user = userCredential.user;
 
       if (user == null) {
-        return const Left('User not found');
+        return const Left('user-not-found');
       }
 
       // Use Firebase's default verification link
@@ -124,15 +118,11 @@ class SignupUsecase {
     } on FirebaseAuthException catch (e) {
       log('Email Verification Error: ${e.message}');
 
-      return Left(
-        e.message ?? 'Failed to send verification email',
-      );
+      return Left(e.code);
     } catch (e) {
       log('Email Verification Error: $e');
 
-      return Left(
-        'Failed to send verification email: $e',
-      );
+      return const Left('unknown');
     }
   }
 
@@ -145,7 +135,7 @@ class SignupUsecase {
       final uid = requestSignup.uid;
 
       if (uid == null || uid.isEmpty) {
-        return const Left('User UID is missing');
+        return const Left('unknown');
       }
 
       await FirebaseFirestore.instance
@@ -157,9 +147,7 @@ class SignupUsecase {
     } on FirebaseException catch (e) {
       log('Firestore Error: ${e.message}');
 
-      return Left(
-        e.message ?? 'Failed to save user information',
-      );
+      return Left(e.code);
     }
   }
 }

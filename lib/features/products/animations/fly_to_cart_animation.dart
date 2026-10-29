@@ -215,15 +215,16 @@ class _ProductThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       width: 72,
       height: 72,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cs.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF07583F),
+          color: cs.primary,
           width: 2,
         ),
         boxShadow: [
@@ -240,9 +241,9 @@ class _ProductThumbnail extends StatelessWidget {
           imageUrl,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            return const Icon(
+            return Icon(
               Icons.shopping_bag_outlined,
-              color: Color(0xFF07583F),
+              color: cs.primary,
               size: 30,
             );
           },

@@ -16,18 +16,6 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
     AppImages.onboarding3,
   ];
 
-  final onBoardTitle = [
-    'Discover Amazing Products',
-    'Shop Your Style',
-    'Fast & Safe Delivery',
-  ];
-
-  final onBoardDescreption = [
-    'Find everything you need in one place.',
-    'Top brands, great prices and the latest trends.',
-    'Get your orders delivered right to your doorstep.',
-  ];
-
   void nextPageController() {
     pageController.nextPage(
       duration: Duration(milliseconds: 300),

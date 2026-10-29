@@ -7,6 +7,7 @@ import 'package:shoply_app/features/products/repo/products_repo.dart';
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
 import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -42,6 +43,8 @@ class _FavoritesBodyState extends State<_FavoritesBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     return StreamBuilder<Set<String>>(
       stream: _favoritesStream,
       builder: (context, snapshot) {
@@ -50,7 +53,7 @@ class _FavoritesBodyState extends State<_FavoritesBody> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Text(
-                'Failed to load favorites:\n${snapshot.error}',
+                l10n.favoritesLoadFailed(snapshot.error!),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -66,28 +69,28 @@ class _FavoritesBodyState extends State<_FavoritesBody> {
         final favoriteIds = snapshot.data!;
 
         if (favoriteIds.isEmpty) {
-          return const Center(
+          return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.favorite_border,
                   size: 75,
-                  color: Colors.grey,
+                  color: muted,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
-                  'No favorites yet',
-                  style: TextStyle(
+                  l10n.noFavorites,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
-                  'Tap the heart on a product to save it here.',
+                  l10n.noFavoritesHint,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: muted),
                 ),
               ],
             ),
@@ -105,7 +108,10 @@ class _FavoritesBodyState extends State<_FavoritesBody> {
 
             if (state is ProductsError) {
               return Center(
-                child: Text(state.message),
+                child: Text(
+                  l10n.errorWithDetails(state.message),
+                  textAlign: TextAlign.center,
+                ),
               );
             }
 
@@ -117,9 +123,9 @@ class _FavoritesBodyState extends State<_FavoritesBody> {
                   .toList();
 
               if (favoriteProducts.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    'No matching favorite products found.',
+                    l10n.noMatchingFavorites,
                   ),
                 );
               }

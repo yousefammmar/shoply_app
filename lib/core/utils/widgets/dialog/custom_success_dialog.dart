@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_dialog/pro_dialog.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class CustomSuccessDialog extends StatelessWidget {
   const CustomSuccessDialog({super.key});
@@ -21,7 +22,11 @@ class CustomSuccessDialog extends StatelessWidget {
       title: title,
       description: description,
       buttons: [
-        DialogButton(text: 'Got it', isPrimary: true, onPressed: onPressed),
+        DialogButton(
+          text: context.l10n.gotIt,
+          isPrimary: true,
+          onPressed: onPressed,
+        ),
       ],
     );
   }

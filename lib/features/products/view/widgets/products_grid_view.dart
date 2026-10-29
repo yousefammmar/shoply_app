@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class ProductsGridView extends StatelessWidget {
   const ProductsGridView({super.key});
@@ -23,7 +24,7 @@ class ProductsGridView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                state.message,
+                context.l10n.errorWithDetails(state.message),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -34,8 +35,8 @@ class ProductsGridView extends StatelessWidget {
           final products = state.products;
 
           if (products.isEmpty) {
-            return const Center(
-              child: Text('No products available'),
+            return Center(
+              child: Text(context.l10n.noProducts),
             );
           }
 

@@ -6,6 +6,7 @@ import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
 import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 class CategoryProductsScreen extends StatelessWidget {
   final String categoryId;
   final String categoryName;
@@ -23,11 +24,9 @@ class CategoryProductsScreen extends StatelessWidget {
         productsRepo: ProductsRepo(),
       )..getProductsByCategory(categoryId),
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(categoryName),
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF07583F),
+          foregroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
         ),
         body: BlocBuilder<ProductsCubit, ProductsState>(
@@ -44,7 +43,7 @@ class CategoryProductsScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    state.message,
+                    context.l10n.errorWithDetails(state.message),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -55,9 +54,9 @@ class CategoryProductsScreen extends StatelessWidget {
               final products = state.products;
 
               if (products.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    'No products found in this category',
+                    context.l10n.noProductsInCategory,
                   ),
                 );
               }

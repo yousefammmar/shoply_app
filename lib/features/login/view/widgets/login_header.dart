@@ -5,6 +5,7 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         Image(
@@ -15,19 +16,21 @@ class _LoginHeader extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          'Welcom Back',
+          context.l10n.welcomeBack,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 35,
             fontWeight: FontWeight.w800,
-            color: Colors.black,
+            color: cs.onSurface,
           ),
         ),
         Text(
-          'Sign to countinue shopping',
+          context.l10n.signInToContinue,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade600,
+            color: cs.onSurfaceVariant,
           ),
         ),
       ],

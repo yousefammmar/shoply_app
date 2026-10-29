@@ -7,6 +7,7 @@ import 'package:shoply_app/features/products/view_model/products_cubit.dart';
 import 'package:shoply_app/features/products/view/widgets/product_card.dart';
 
 import 'package:shoply_app/features/products/view/widgets/product_details_screen.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 class TrendingProducts extends StatefulWidget {
   const TrendingProducts({super.key});
 
@@ -15,14 +16,14 @@ class TrendingProducts extends StatefulWidget {
 }
 
 class _TrendingProductsState extends State<TrendingProducts> {
-  static const Color primaryColor = Color(0xFF07583F);
-
   // Prevent unnecessary entrance animation after rebuilding.
   final Set<String> _animatedProductIds = {};
 
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
 
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
@@ -35,14 +36,14 @@ class _TrendingProductsState extends State<TrendingProducts> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               children: [
-                const Icon(
+                Icon(
                   Icons.error_outline_rounded,
                   size: 42,
-                  color: primaryColor,
+                  color: cs.primary,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  state.message,
+                  l10n.errorWithDetails(state.message),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -51,7 +52,7 @@ class _TrendingProductsState extends State<TrendingProducts> {
                     context.read<ProductsCubit>().getProducts();
                   },
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Try Again'),
+                  label: Text(l10n.tryAgain),
                 ),
               ],
             ),
@@ -64,10 +65,10 @@ class _TrendingProductsState extends State<TrendingProducts> {
               .toList();
 
           if (products.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Center(
-                child: Text('No trending products available'),
+                child: Text(l10n.noTrendingProducts),
               ),
             );
           }
@@ -84,10 +85,10 @@ class _TrendingProductsState extends State<TrendingProducts> {
                     size: 25,
                   ),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Trending Products',
-                      style: TextStyle(
+                      l10n.trendingProducts,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -99,13 +100,13 @@ class _TrendingProductsState extends State<TrendingProducts> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE7F4EE),
+                      color: cs.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Text(
-                      'Popular',
+                    child: Text(
+                      l10n.popular,
                       style: TextStyle(
-                        color: primaryColor,
+                        color: cs.primary,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -197,12 +198,13 @@ class _TrendingSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final cs = Theme.of(context).colorScheme;
 
     Widget skeleton(double height) {
       final placeholder = Container(
         height: height,
         decoration: BoxDecoration(
-          color: const Color(0xFFE8EEEB),
+          color: cs.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(16),
         ),
       );
@@ -215,7 +217,7 @@ class _TrendingSkeleton extends StatelessWidget {
           )
           .shimmer(
             duration: 1400.ms,
-            color: Colors.white.withValues(alpha: 0.5),
+            color: cs.surface.withValues(alpha: 0.5),
           );
     }
 

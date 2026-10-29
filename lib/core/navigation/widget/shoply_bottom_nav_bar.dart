@@ -5,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:shoply_app/features/home/animations/navigation_animations.dart';
 import 'package:shoply_app/features/cart/repo/cart_repo.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class ShoplyBottomNavBar extends StatefulWidget {
   final int selectedIndex;
@@ -23,8 +24,6 @@ class ShoplyBottomNavBar extends StatefulWidget {
 
 class _ShoplyBottomNavBarState
     extends State<ShoplyBottomNavBar> {
-  static const Color primaryColor = Color(0xFF07583F);
-
   late final Stream<Map<String, int>> _cartStream;
 
   @override
@@ -38,6 +37,7 @@ class _ShoplyBottomNavBarState
   // ================= CART ICON + BADGE =================
 
   Widget _buildCartIcon(int count) {
+    final cs = Theme.of(context).colorScheme;
     final selected = widget.selectedIndex == 3;
     final reduceMotion =
         MediaQuery.disableAnimationsOf(context);
@@ -55,16 +55,16 @@ class _ShoplyBottomNavBarState
                     ? Icons.shopping_cart_rounded
                     : Icons.shopping_cart_outlined,
                 color: selected
-                    ? primaryColor
-                    : Colors.grey.shade600,
+                    ? cs.primary
+                    : cs.onSurfaceVariant,
               ),
               isSelected: selected,
             ),
           ),
 
-          Positioned(
+          PositionedDirectional(
             top: -6,
-            right: -8,
+            end: -8,
             child: AnimatedSwitcher(
               duration: reduceMotion
                   ? Duration.zero
@@ -98,7 +98,7 @@ class _ShoplyBottomNavBarState
                         color: const Color(0xFFE53935),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: Colors.white,
+                          color: cs.surface,
                           width: 1.5,
                         ),
                       ),
@@ -124,6 +124,8 @@ class _ShoplyBottomNavBarState
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     return StreamBuilder<Map<String, int>>(
       stream: _cartStream,
       builder: (context, snapshot) {
@@ -138,7 +140,7 @@ class _ShoplyBottomNavBarState
 
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cs.surface,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(
@@ -170,13 +172,13 @@ class _ShoplyBottomNavBarState
                 duration:
                     const Duration(milliseconds: 350),
                 curve: Curves.easeOutCubic,
-                color: Colors.grey.shade600,
-                activeColor: primaryColor,
+                color: cs.onSurfaceVariant,
+                activeColor: cs.primary,
                 tabBackgroundColor:
-                    primaryColor.withValues(alpha: 0.09),
+                    cs.primary.withValues(alpha: 0.09),
                 tabBorderRadius: 14,
-                textStyle: const TextStyle(
-                  color: primaryColor,
+                textStyle: TextStyle(
+                  color: cs.primary,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
@@ -184,7 +186,7 @@ class _ShoplyBottomNavBarState
                   // HOME
                   GButton(
                     icon: Icons.home_outlined,
-                    text: 'Home',
+                    text: l10n.home,
                     leading:
                         BottomNavAnimations.animateIcon(
                       Icon(
@@ -192,8 +194,8 @@ class _ShoplyBottomNavBarState
                             ? Icons.home_rounded
                             : Icons.home_outlined,
                         color: widget.selectedIndex == 0
-                            ? primaryColor
-                            : Colors.grey.shade600,
+                            ? cs.primary
+                            : cs.onSurfaceVariant,
                       ),
                       isSelected:
                           widget.selectedIndex == 0,
@@ -203,14 +205,14 @@ class _ShoplyBottomNavBarState
                   // CATEGORIES
                   GButton(
                     icon: Icons.grid_view_rounded,
-                    text: 'Categories',
+                    text: l10n.categories,
                     leading:
                         BottomNavAnimations.animateIcon(
                       Icon(
                         Icons.grid_view_rounded,
                         color: widget.selectedIndex == 1
-                            ? primaryColor
-                            : Colors.grey.shade600,
+                            ? cs.primary
+                            : cs.onSurfaceVariant,
                       ),
                       isSelected:
                           widget.selectedIndex == 1,
@@ -220,7 +222,7 @@ class _ShoplyBottomNavBarState
                   // FAVORITES
                   GButton(
                     icon: Icons.favorite_border_rounded,
-                    text: 'Favorite',
+                    text: l10n.favorites,
                     leading:
                         BottomNavAnimations.animateIcon(
                       Icon(
@@ -228,8 +230,8 @@ class _ShoplyBottomNavBarState
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
                         color: widget.selectedIndex == 2
-                            ? primaryColor
-                            : Colors.grey.shade600,
+                            ? cs.primary
+                            : cs.onSurfaceVariant,
                       ),
                       isSelected:
                           widget.selectedIndex == 2,
@@ -239,7 +241,7 @@ class _ShoplyBottomNavBarState
                   // CART
                   GButton(
                     icon: Icons.shopping_cart_outlined,
-                    text: 'Cart',
+                    text: l10n.cart,
                     leading: _buildCartIcon(count),
                   ),
                 ],

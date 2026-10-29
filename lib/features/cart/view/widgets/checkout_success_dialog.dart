@@ -3,19 +3,19 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class CheckoutSuccessDialog extends StatefulWidget {
-  final String title;
-  final String message;
-  final String buttonText;
+  // Null values fall back to the localized order-placed texts.
+  final String? title;
+  final String? message;
+  final String? buttonText;
 
   const CheckoutSuccessDialog({
     super.key,
-    this.title = 'Order Placed Successfully!',
-    this.message =
-        'Thank you for shopping with Shoply!\n'
-        'Your order is saved in Order History.',
-    this.buttonText = 'Done',
+    this.title,
+    this.message,
+    this.buttonText,
   });
 
   @override
@@ -26,8 +26,6 @@ class CheckoutSuccessDialog extends StatefulWidget {
 class _CheckoutSuccessDialogState
     extends State<CheckoutSuccessDialog>
     with SingleTickerProviderStateMixin {
-  static const Color primaryColor = Color(0xFF07583F);
-
   late final AnimationController _confettiController;
 
   @override
@@ -81,12 +79,13 @@ class _CheckoutSuccessDialogState
   // ================= SUCCESS ICON =================
 
   Widget _buildSuccessIcon(bool reduceMotion) {
-    Widget icon = const CircleAvatar(
+    final cs = Theme.of(context).colorScheme;
+    Widget icon = CircleAvatar(
       radius: 51,
-      backgroundColor: Color(0xFFE7F4EE),
+      backgroundColor: cs.primaryContainer,
       child: Icon(
         Icons.check_circle_rounded,
-        color: primaryColor,
+        color: cs.primary,
         size: 76,
       ),
     );
@@ -110,9 +109,10 @@ class _CheckoutSuccessDialogState
   Widget build(BuildContext context) {
     final bool reduceMotion =
         MediaQuery.disableAnimationsOf(context);
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
 
     return Dialog(
-      backgroundColor: Colors.white,
       insetPadding: const EdgeInsets.symmetric(
         horizontal: 25,
       ),
@@ -158,10 +158,10 @@ class _CheckoutSuccessDialogState
                   // DYNAMIC TITLE
                   _animateEntrance(
                     Text(
-                      widget.title,
+                      widget.title ?? l10n.orderPlacedTitle,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: primaryColor,
+                      style: TextStyle(
+                        color: cs.primary,
                         fontSize: 21,
                         fontWeight: FontWeight.bold,
                       ),
@@ -175,12 +175,12 @@ class _CheckoutSuccessDialogState
                   // DYNAMIC MESSAGE
                   _animateEntrance(
                     Text(
-                      widget.message,
+                      widget.message ?? l10n.orderPlacedMessage,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         height: 1.6,
-                        color: Colors.black54,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                     delay: 280,
@@ -199,15 +199,15 @@ class _CheckoutSuccessDialogState
                           Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          foregroundColor: Colors.white,
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(14),
                           ),
                         ),
                         child: Text(
-                          widget.buttonText,
+                          widget.buttonText ?? l10n.done,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,

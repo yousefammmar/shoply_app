@@ -34,4 +34,20 @@ class LocalStorage {
   bool? getIsLogin() {
     return _preferences?.getBool('isLogin');
   }
+
+  Future<void> setLanguageCode({required String languageCode}) async {
+    await _preferences?.setString('languageCode', languageCode);
+  }
+
+  String? getLanguageCode() {
+    return _preferences?.getString('languageCode');
+  }
+
+  Future<void> setThemeMode({required String themeMode}) async {
+    await _preferences?.setString('themeMode', themeMode);
+  }
+
+  String? getThemeMode() {
+    return _preferences?.getString('themeMode');
+  }
 }

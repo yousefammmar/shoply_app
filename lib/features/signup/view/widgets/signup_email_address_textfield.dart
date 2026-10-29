@@ -6,39 +6,39 @@ class _SignupEmailAddressTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SignupCubit>();
+    final l10n = context.l10n;
+    final iconColor = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.75);
     return Column(
       children: [
         CustomTextField(
           validator: (email) {
             if (email?.isEmpty ?? false) {
-              return 'Email is required';
+              return l10n.emailRequired;
             } else if (AppRegex.emailRegex.hasMatch(email ?? '') == false) {
-              return 'Email is not valid';
+              return l10n.emailInvalid;
             }
             return null;
           },
           controller: cubit.emailController,
-          hinText: 'Email',
-          prefixIcon: Icon(
-            Icons.email_outlined,
-            size: 28,
-            color: Colors.grey.shade800,
-          ),
+          hinText: l10n.email,
+          prefixIcon: Icon(Icons.email_outlined, size: 28, color: iconColor),
         ),
         SizedBox(height: 15),
         CustomTextField(
           validator: (address) {
             if (address?.isEmpty ?? false) {
-              return 'Address is required';
+              return l10n.addressRequired;
             }
             return null;
           },
           controller: cubit.addressController,
-          hinText: 'Address',
+          hinText: l10n.address,
           prefixIcon: Icon(
             Icons.location_on_outlined,
             size: 28,
-            color: Colors.grey.shade800,
+            color: iconColor,
           ),
         ),
       ],

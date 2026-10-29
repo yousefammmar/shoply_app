@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shoply_app/features/orders/repo/orders_repo.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({super.key});
@@ -25,13 +26,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Order History', style: TextStyle(fontWeight:FontWeight.bold)),
+        title: Text(l10n.orderHistory, style: const TextStyle(fontWeight:FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF07583F),
+        foregroundColor: cs.primary,
         elevation: 0,
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -42,7 +43,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  'Failed to load orders:\n${snapshot.error}',
+                  l10n.ordersLoadFailed(snapshot.error!),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -58,27 +59,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           final orders = snapshot.data!.docs;
 
           if (orders.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.receipt_long_outlined,
                     size: 75,
-                    color: Colors.grey,
+                    color: cs.onSurfaceVariant,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    'No orders yet',
-                    style: TextStyle(
+                    l10n.noOrders,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    'Your previous orders will appear here.',
-                    style: TextStyle(color: Colors.grey),
+                    l10n.noOrdersHint,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: cs.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -103,7 +105,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               final status = data['status']?.toString() ?? 'placed';
               final timestamp = data['createdAt'];
 
-              String date = 'Processing date';
+              String date = l10n.processingDate;
 
               if (timestamp is Timestamp) {
                 final createdAt = timestamp.toDate();
@@ -114,23 +116,25 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cs.surface,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: cs.outlineVariant),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.receipt_long,
-                          color: Color(0xFF07583F),
+                          color: cs.primary,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Order #${order.id.substring(0, 6).toUpperCase()}',
+                            l10n.orderNumber(
+                              order.id.substring(0, 6).toUpperCase(),
+                            ),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -143,13 +147,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE7F4EE),
+                            color: cs.primaryContainer,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            status.toUpperCase(),
-                            style: const TextStyle(
-                              color: Color(0xFF07583F),
+                            l10n.orderStatus(status).toUpperCase(),
+                            style: TextStyle(
+                              color: cs.primary,
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
                             ),
@@ -162,8 +166,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
                     Text(
                       date,
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: cs.onSurfaceVariant,
                         fontSize: 13,
                       ),
                     ),
@@ -171,7 +175,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     const Divider(height: 24),
 
                     ...items.map((item) {
-                      final name = item['name']?.toString() ?? 'Product';
+                      final name = item['name']?.toString() ?? l10n.product;
                       final quantity =
                           (item['quantity'] as num?)?.toInt() ?? 1;
                       final price =
@@ -205,19 +209,19 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       mainAxisAlignment:
                           MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Total',
-                          style: TextStyle(
+                        Text(
+                          l10n.total,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
                           '\$${total.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF07583F),
+                            color: cs.primary,
                           ),
                         ),
                       ],

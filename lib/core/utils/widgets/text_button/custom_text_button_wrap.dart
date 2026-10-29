@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shoply_app/core/utils/theme/app_colors.dart';
 
 class CustomTextButtonWrap extends StatelessWidget {
   const CustomTextButtonWrap({
@@ -13,6 +12,7 @@ class CustomTextButtonWrap extends StatelessWidget {
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Wrap(
       children: [
         Text(
@@ -20,7 +20,7 @@ class CustomTextButtonWrap extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade600,
+            color: cs.onSurfaceVariant,
           ),
         ),
         GestureDetector(
@@ -30,7 +30,7 @@ class CustomTextButtonWrap extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
+              color: cs.primary,
             ),
           ),
         ),

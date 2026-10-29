@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_dialog/pro_dialog.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class CustomDialogError extends StatelessWidget {
   const CustomDialogError({super.key});
@@ -21,7 +22,11 @@ class CustomDialogError extends StatelessWidget {
       title: title,
       description: description,
       buttons: [
-        DialogButton(text: 'Got it', onPressed: onPressed, isPrimary: true),
+        DialogButton(
+          text: context.l10n.gotIt,
+          onPressed: onPressed,
+          isPrimary: true,
+        ),
       ],
     );
   }

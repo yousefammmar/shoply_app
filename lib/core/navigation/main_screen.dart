@@ -24,9 +24,9 @@ import 'package:shoply_app/features/profile/view/profile_screen.dart';
 import 'package:shoply_app/features/settings/view/settings_screen.dart';
 import 'package:shoply_app/features/about/view/about_screen.dart';
 import 'package:shoply_app/core/utils/widgets/dialog/app_confirmation_dialog.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
-  static const green = Color(0xFF07583F);
 
   Future<void> _logout(BuildContext context) async {
     try {
@@ -37,18 +37,17 @@ class MainScreen extends StatelessWidget {
       Navigator.pushNamedAndRemoveUntil(context, AppPages.loginScreen, (route) => false);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logout failed: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.logoutFailed(e))));
       }
     }
   }
   Future<void> _confirmLogout(BuildContext context) async {
     final confirmed = await AppConfirmationDialog.show(
       context: context,
-      title: 'Logout?',
-      message:
-          'Are you sure you want to logout of your Shoply account?',
-      confirmText: 'Logout',
-      cancelText: 'Stay',
+      title: context.l10n.logoutTitle,
+      message: context.l10n.logoutMessage,
+      confirmText: context.l10n.logout,
+      cancelText: context.l10n.stay,
       icon: Icons.logout_rounded,
       isDangerous: true,
     );
@@ -65,9 +64,11 @@ class MainScreen extends StatelessWidget {
       pageBuilder: (context, animation, secondary) => page,
       transitionsBuilder: (context, animation, secondary, child) {
         final curve = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        // Slide in from the reading-direction end (right in LTR, left in RTL).
+        final dx = Directionality.of(context) == TextDirection.rtl ? -.06 : .06;
         return FadeTransition(opacity: curve,
           child: SlideTransition(position: Tween<Offset>(
-            begin: const Offset(.06, 0), end: Offset.zero).animate(curve), child: child));
+            begin: Offset(dx, 0), end: Offset.zero).animate(curve), child: child));
       },
     ));
   }
@@ -77,17 +78,17 @@ class MainScreen extends StatelessWidget {
     create: (_) => FavoritesCubit(favoritesRepo: FavoritesRepo())..loadFavorites(),
     child: BlocBuilder<MainCubit, MainState>(builder: (context, state) {
       final mainCubit = context.read<MainCubit>();
+      final l10n = context.l10n;
+      final primary = Theme.of(context).colorScheme.primary;
       return Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
           elevation: 0,
           centerTitle: true,
           title: Text(switch (mainCubit.selectedIndex) {
-            0 => 'Shoply', 1 => 'Categories', 2 => 'Favorites', 3 => 'Cart', _ => 'Shoply',
-          }, style: const TextStyle(color: green, fontSize: 20, fontWeight: FontWeight.bold)),
+            0 => 'Shoply', 1 => l10n.categories, 2 => l10n.favorites, 3 => l10n.cart, _ => 'Shoply',
+          }, style: TextStyle(color: primary, fontSize: 20, fontWeight: FontWeight.bold)),
           leading: Builder(builder: (scaffoldContext) => IconButton(
-            icon: const Icon(Icons.menu, color: green),
+            icon: Icon(Icons.menu, color: primary),
             onPressed: () => Scaffold.of(scaffoldContext).openDrawer(),
           )),
         ),

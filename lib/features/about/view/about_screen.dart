@@ -1,20 +1,24 @@
 
 import 'package:flutter/material.dart';
+import 'package:shoply_app/l10n/l10n.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
-  static const Color primaryColor = Color(0xFF07583F);
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final cs = Theme.of(context).colorScheme;
+    final bodyStyle = TextStyle(
+      fontSize: 16,
+      height: 1.7,
+      color: cs.onSurface.withValues(alpha: 0.87),
+    );
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('About Shoply', style: TextStyle(fontWeight:FontWeight.bold), ),
+        title: Text(l10n.aboutShoply, style: const TextStyle(fontWeight:FontWeight.bold), ),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: primaryColor,
+        foregroundColor: cs.primary,
         
       ),
       body: SingleChildScrollView(
@@ -28,43 +32,43 @@ class AboutScreen extends StatelessWidget {
               width: 110,
               height: 110,
               decoration: BoxDecoration(
-                color: const Color(0xFFE7F4EE),
+                color: cs.primaryContainer,
                 borderRadius: BorderRadius.circular(28),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.shopping_bag_outlined,
                 size: 65,
-                color: primaryColor,
+                color: cs.primary,
               ),
             ),
 
             const SizedBox(height: 24),
 
-            const Text(
+            Text(
               'Shoply',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: cs.primary,
               ),
             ),
 
             const SizedBox(height: 8),
 
-            const Text(
-              'Your Everyday Shopping Companion',
+            Text(
+              l10n.aboutTagline,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
-                color: Colors.grey,
+                color: cs.onSurfaceVariant,
               ),
             ),
 
             const SizedBox(height: 32),
 
-            const Text(
-              'About the Application',
-              style: TextStyle(
+            Text(
+              l10n.aboutTheApplication,
+              style: const TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.bold,
               ),
@@ -72,70 +76,52 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            const Text(
-              'Shoply is a modern e-commerce mobile '
-              'application designed to make online '
-              'shopping simple, convenient, and enjoyable. '
-              'It provides an organized shopping experience '
-              'where users can explore products across '
-              'different categories, discover trending '
-              'items, and view detailed product information.',
+            Text(
+              l10n.aboutParagraph1,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                height: 1.7,
-                color: Colors.black87,
-              ),
+              style: bodyStyle,
             ),
 
             const SizedBox(height: 20),
 
-            const Text(
-              'With Shoply, customers can save their '
-              'favorite products, manage their shopping '
-              'cart, adjust product quantities, review '
-              'their order history, and personalize '
-              'their account information.',
+            Text(
+              l10n.aboutParagraph2,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                height: 1.7,
-                color: Colors.black87,
-              ),
+              style: bodyStyle,
             ),
 
             const SizedBox(height: 32),
 
-            const _FeatureRow(
+            _FeatureRow(
               icon: Icons.category_outlined,
-              text: 'Explore Product Categories',
+              text: l10n.featureExploreCategories,
             ),
 
-            const _FeatureRow(
+            _FeatureRow(
               icon: Icons.favorite_border,
-              text: 'Save Favorite Products',
+              text: l10n.featureSaveFavorites,
             ),
 
-            const _FeatureRow(
+            _FeatureRow(
               icon: Icons.shopping_cart_outlined,
-              text: 'Manage Shopping Cart',
+              text: l10n.featureManageCart,
             ),
 
-            const _FeatureRow(
+            _FeatureRow(
               icon: Icons.receipt_long_outlined,
-              text: 'Review Order History',
+              text: l10n.featureReviewOrders,
             ),
 
-            const _FeatureRow(
+            _FeatureRow(
               icon: Icons.person_outline,
-              text: 'Personalize Your Account',
+              text: l10n.featurePersonalizeAccount,
             ),
 
             const SizedBox(height: 30),
 
-            const Text(
-              'Version 1.0.0',
-              style: TextStyle(color: Colors.grey),
+            Text(
+              l10n.version('1.0.0'),
+              style: TextStyle(color: cs.onSurfaceVariant),
             ),
           ],
         ),
@@ -155,18 +141,19 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9F8),
+        color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
           Icon(
             icon,
-            color: const Color(0xFF07583F),
+            color: cs.primary,
           ),
           const SizedBox(width: 14),
           Expanded(
